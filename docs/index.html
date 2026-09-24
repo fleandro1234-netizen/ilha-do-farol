@@ -168,7 +168,7 @@ td:first-child{font-weight:700;width:24%}
 /* personagens */
 .elenco{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 .elenco.moradores{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
-.elenco div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px}
+.elenco div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px;align-content:start}
 .elenco strong{font-family:var(--f-display);font-weight:600}
 .elenco span{font-size:.94rem;color:var(--ink-2)}
 .elenco .destaque{background:var(--teal-soft);border-color:transparent}
@@ -229,6 +229,28 @@ td:first-child{font-weight:700;width:24%}
 .refs{margin:0;padding-left:1.3em;display:grid;gap:8px;font-size:.92rem;max-width:80ch}
 .refs li::marker{color:var(--ink-2)}
 .rodape{font-size:.85rem;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px}
+
+/* versão 2: psicólogo no comando */
+.ciclo{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;counter-reset:c}
+@media (min-width:460px){.ciclo{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:760px){.ciclo{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ciclo li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:6px;counter-increment:c;align-content:start}
+.ciclo li::before{content:"Passo " counter(c);font-family:var(--f-display);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.ciclo strong{font-family:var(--f-display);font-weight:600}
+.ciclo span{font-size:.93rem;color:var(--ink-2)}
+.ciclo .volta{background:var(--teal-soft);border-color:transparent}
+.ciclo .volta span{color:var(--ink)}
+.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.duas > div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:10px;align-content:start}
+.duas ul{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:.95rem}
+.exemplo{border:2px dashed var(--line);border-radius:14px;padding:18px;display:grid;gap:14px}
+.exemplo .selo{justify-self:start;font-family:var(--f-display);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--amber-ink);background:var(--amber-soft);padding:3px 10px;border-radius:999px}
+.exemplo p{max-width:72ch}
+.exemplo dl{margin:0;display:grid;gap:10px}
+.exemplo dl > div{display:grid;grid-template-columns:minmax(0,1fr);gap:2px}
+@media (min-width:640px){.exemplo dl > div{grid-template-columns:180px minmax(0,1fr);gap:14px}}
+.exemplo dt{font-family:var(--f-display);font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);padding-top:3px}
+.exemplo dd{margin:0}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 </style>
 </head>
@@ -239,15 +261,17 @@ td:first-child{font-weight:700;width:24%}
     <summary>Sumário</summary>
     <ol>
       <li><a href="#ideia">A ideia central</a></li>
+      <li><a href="#psicologo">O psicólogo no comando</a></li>
       <li><a href="#base">Base psicológica</a></li>
       <li><a href="#principios">Princípios de desenho</a></li>
+      <li><a href="#telas">Celular e tablet</a></li>
       <li><a href="#mundo">O mundo e o elenco</a></li>
       <li><a href="#sessao">Como é uma sessão</a></li>
       <li><a href="#ajuda">Ajuda e recompensa</a></li>
       <li><a href="#lugares">Os lugares da ilha</a></li>
       <li><a href="#historia">A história</a></li>
       <li><a href="#perfis">Perfis de suporte</a></li>
-      <li><a href="#adulto">O papel do adulto</a></li>
+      <li><a href="#adulto">Pais e cuidadores</a></li>
       <li><a href="#programa">Programa de 12 semanas</a></li>
       <li><a href="#medir">Como saber se funciona</a></li>
       <li><a href="#etica">Ética e segurança</a></li>
@@ -263,15 +287,15 @@ td:first-child{font-weight:700;width:24%}
 <main>
 
 <header class="abertura">
-  <p class="eyebrow">Roteiro de jogo terapêutico · versão 1 · 24/09/2026</p>
+  <p class="eyebrow">Roteiro de jogo terapêutico · versão 2 · 24/09/2026</p>
   <h1><span>Ilha do Farol</span></h1>
-  <p class="lede">Um jogo para crianças autistas de 4 a 10 anos. A criança ajuda um polvinho a reacender o farol da ilha. Cada lugar da ilha treina uma habilidade que a terapia já usa, e cada sessão termina com uma missão para fazer fora da tela, junto com um adulto.</p>
+  <p class="lede">Um jogo para crianças autistas de 4 a 10 anos que cada psicólogo ajusta à análise da criança. A criança ajuda um polvinho a reacender o farol da ilha. Cada lugar da ilha treina uma habilidade que a terapia já usa, e cada sessão termina com uma missão para fazer fora da tela, junto com um adulto.</p>
   <dl class="ficha">
-    <div><dt>Público</dt><dd>Crianças autistas de 4 a 10 anos, em três perfis de suporte</dd></div>
-    <div><dt>Formato</dt><dd>Aplicativo de tablet, sem internet, com cartas de missão para imprimir</dd></div>
-    <div><dt>Sessão</dt><dd>10 a 15 minutos, de 3 a 5 vezes por semana</dd></div>
-    <div><dt>Programa</dt><dd>12 semanas, depois modo de manutenção</dd></div>
-    <div><dt>Quem media</dt><dd>Pais ou cuidadores, com metas definidas pelo terapeuta</dd></div>
+    <div><dt>Público</dt><dd>Crianças autistas de 4 a 10 anos, com qualquer nível de suporte</dd></div>
+    <div><dt>Formato</dt><dd>Aplicativo de celular ou tablet (Android e iPhone), que funciona sem internet</dd></div>
+    <div><dt>Quem ajusta</dt><dd>O psicólogo, a partir da análise de cada criança, num painel próprio</dd></div>
+    <div><dt>Quem aplica</dt><dd>Pais ou cuidadores em casa, e o psicólogo no consultório</dd></div>
+    <div><dt>Sessão</dt><dd>10 a 15 minutos, de 3 a 5 vezes por semana, se o psicólogo não definir outro ritmo</dd></div>
     <div><dt>Papel</dt><dd>Complemento da terapia, nunca substituto</dd></div>
   </dl>
 </header>
@@ -293,6 +317,131 @@ td:first-child{font-weight:700;width:24%}
   </ol>
 </section>
 
+<section id="psicologo" aria-labelledby="t-psicologo">
+  <p class="eyebrow">Um jogo que cada psicólogo ajusta</p>
+  <h2 id="t-psicologo">O psicólogo no comando</h2>
+  <p>Nenhuma criança autista é igual à outra, e nenhum psicólogo trabalha igual ao outro. Por isso o jogo não traz um tratamento pronto. Ele traz uma biblioteca de lugares, alvos e procedimentos, e quem monta o plano de cada criança é o psicólogo, a partir da análise que ele fez. O jogo executa esse plano, mede o que acontece e devolve os dados para o psicólogo decidir o próximo passo.</p>
+  <p>Tudo o que este roteiro descreve (tempos, níveis, recompensas, critérios) é o padrão de fábrica, usado só quando o psicólogo não definiu outra coisa.</p>
+
+  <h3>O ciclo de trabalho</h3>
+  <ol class="ciclo">
+    <li><strong>Analisar</strong><span>O psicólogo avalia a criança com os instrumentos que já usa e registra o resultado no painel, com as próprias palavras.</span></li>
+    <li><strong>Planejar</strong><span>Escreve as metas e escolhe os alvos: do banco pronto ou criados por ele.</span></li>
+    <li><strong>Configurar</strong><span>Ajusta ensino, reforço, perfil sensorial, tempo e o que os pais podem mudar.</span></li>
+    <li><strong>Aplicar</strong><span>A criança joga em casa, com os pais, e no consultório, com o psicólogo.</span></li>
+    <li><strong>Medir</strong><span>O jogo registra linha de base, cada sessão, as missões e os registros dos pais.</span></li>
+    <li class="volta"><strong>Revisar</strong><span>O gráfico mostra se o ajuste funcionou. O psicólogo mantém, muda ou troca o alvo, e o ciclo volta ao passo 2.</span></li>
+  </ol>
+
+  <h3>O que o psicólogo ajusta</h3>
+  <div class="tabela" role="region" aria-label="O que o psicólogo ajusta" tabindex="0">
+    <table>
+      <thead><tr><th>Camada</th><th>O que se ajusta</th><th>Exemplo</th></tr></thead>
+      <tbody>
+        <tr><td>Perfil da criança</td><td>Como ela se comunica (fala, frases, pictogramas, a prancha de comunicação alternativa que ela já usa), se lê, como toca na tela, quanto tempo mantém a atenção</td><td>Importar a prancha da criança, com os mesmos símbolos que ela usa na escola</td></tr>
+        <tr><td>Perfil sensorial</td><td>Volume de música, efeitos e voz; brilho; quantidade de animação; cores; velocidade da voz; voz gravada pela família</td><td>Sem música e sem efeitos, só a voz, baixa e devagar</td></tr>
+        <tr><td>Lugares e ordem</td><td>Quais lugares da ilha ficam abertos, em que ordem e por quantas sessões</td><td>Só Vila Conversa e Enseada Calma nas quatro primeiras semanas</td></tr>
+        <tr><td>Metas e alvos</td><td>Alvos do banco pronto ou criados do zero, com fotos, áudios e vídeos próprios, resposta esperada e nível</td><td>“Pedir pausa quando a tarefa fica difícil”, com a foto da mesa de tarefas da escola</td></tr>
+        <tr><td>Procedimento de ensino</td><td>Tipo e ordem das dicas (da menor para a maior ajuda, ou o contrário), atraso de tempo fixo ou crescente, tentativas por sessão, proporção de itens fáceis e novos, aprendizagem sem erro</td><td>Da maior para a menor ajuda; espera de 0, depois 2, depois 4 segundos; dois itens fáceis para cada novo</td></tr>
+        <tr><td>Reforço</td><td>Quais recompensas (conchas, comemoração, vídeo curto do interesse, tempo no Mirante), com que frequência (a cada acerto ou a cada 2 ou 3) e quanto vale a resposta sozinha em relação à resposta com ajuda</td><td>Vídeo de 10 segundos de trem a cada 3 acertos sozinha</td></tr>
+        <tr><td>Critérios</td><td>Quando o alvo conta como aprendido, quais degraus de generalização são exigidos e de quanto em quanto tempo o alvo aprendido volta para revisão</td><td>90% em 3 sessões seguidas, depois com a foto da escola e com a professora</td></tr>
+        <tr><td>Tempo e rotina</td><td>Duração da sessão, limite diário, dias da semana, horário sugerido</td><td>8 minutos, depois do lanche, 5 dias por semana</td></tr>
+        <tr><td>Missões e orientação</td><td>Quais missões de casa, com que frequência, o texto das instruções aos pais e vídeos gravados pelo próprio psicólogo</td><td>Missão diária de brincar, com a orientação gravada pelo psicólogo</td></tr>
+        <tr><td>Permissões</td><td>O que os pais podem mudar sozinhos e o que fica travado</td><td>Pais mudam volume e horário; alvos, reforço e critérios só o psicólogo</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="lista">
+    <li><b>Escolha das recompensas com a criança.</b> O painel traz uma avaliação de preferência no formato de várias opções sem reposição (DeLeon e Iwata, 1996): a criança escolhe entre 5 a 8 imagens do que gosta, algumas rodadas, e o jogo ordena as preferidas. O psicólogo usa as primeiras da lista como recompensa.</li>
+    <li><b>Linha de base antes de ensinar.</b> Antes de um alvo novo, o jogo faz algumas tentativas sem dica e com retorno neutro, para registrar como a criança estava antes. Sem esse ponto de partida, não dá para saber se o jogo ajudou.</li>
+    <li><b>Frequência de recompensa sempre previsível.</b> O psicólogo pode espaçar a recompensa (a cada 2, a cada 3 acertos), mas não pode torná-la aleatória. O esquema variável fica de fora de propósito: é o mesmo mecanismo das máquinas caça-níquel.</li>
+  </ul>
+
+  <h3>Da análise ao ajuste: a função do comportamento</h3>
+  <p>A avaliação funcional do comportamento está entre as práticas com evidência do NCAEP. Quando o psicólogo registra no painel a hipótese de função que a análise dele indicou, o jogo sugere um ponto de partida. A sugestão é só um rascunho: quem confirma a função e decide o plano é o psicólogo.</p>
+  <div class="tabela" role="region" aria-label="Ajustes sugeridos por função do comportamento" tabindex="0">
+    <table>
+      <thead><tr><th>Função</th><th>Como costuma aparecer</th><th>O que o jogo ensina</th><th>Ajuste sugerido</th></tr></thead>
+      <tbody>
+        <tr><td>Fugir de uma exigência</td><td>Crise quando a tarefa aparece ou fica difícil</td><td>Pedir pausa e pedir ajuda (Vila Conversa)</td><td>Botão de pausa em destaque; tarefas curtas; dois itens fáceis antes de cada difícil; exigência que cresce aos poucos</td></tr>
+        <tr><td>Conseguir um objeto ou atividade</td><td>Choro quando não ganha o que quer</td><td>Pedir com “eu quero” e esperar (Vila Conversa, com a Tuca)</td><td>Todo pedido atendido no começo; espera que cresce aos poucos, com timer visual</td></tr>
+        <tr><td>Conseguir atenção</td><td>Chama atenção de formas difíceis</td><td>Iniciar interação: “olha”, “vem brincar”, mostrar algo (Clareira do Encontro, Mirante)</td><td>Elogio frequente quando ela inicia; “Mostra e conta” em toda sessão</td></tr>
+        <tr><td>Regular o que sente no corpo</td><td>Procura ou foge de som, luz, toque, movimento</td><td>Pedir ajuste e usar ferramentas de calma (Enseada Calma, Vila Conversa)</td><td>Perfil sensorial fino; Caixa de Calma com ferramentas sensoriais; stim nunca vira alvo</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="nota">Comportamento de risco, como autolesão e agressão, é tratado pelo psicólogo fora do jogo. O jogo só ajuda a registrar o que acontece em casa (ver o registro ABC em <a href="#adulto">Pais e cuidadores</a>).</p>
+
+  <h3>Três linhas de trabalho, combináveis</h3>
+  <div class="elenco">
+    <div><strong>Ensino estruturado</strong><span>Na linha da análise do comportamento: tentativas curtas e repetidas, dicas planejadas, recompensa programada e critério de domínio. Casa mais com Vila Conversa, Oficina dos Passos e Praia das Caras.</span></div>
+    <div><strong>Naturalista e do desenvolvimento</strong><span>Na linha do Modelo Denver, do JASPER e do PRT: a criança escolhe, o adulto segue, e a recompensa vem da própria brincadeira. O jogo mostra menos tentativas e mais brincar junto. Casa mais com Clareira do Encontro e Mirante.</span></div>
+    <div><strong>Cognitivo-comportamental</strong><span>Emoções, pensamento e regulação, com planos “se… então…”, para crianças com mais fala. Casa mais com Enseada Calma, Praia das Caras e Mercado das Histórias.</span></div>
+  </div>
+  <p>O psicólogo escolhe a linha por alvo, não por criança: a mesma criança pode ter um alvo de ensino estruturado na Vila e brincar livre na Clareira. Cada psicólogo salva as próprias configurações em “Meus modelos” e reaproveita com outras crianças. Numa clínica, os modelos podem ser compartilhados entre colegas.</p>
+
+  <h3>O que o jogo ajusta sozinho e o que depende do psicólogo</h3>
+  <div class="duas">
+    <div>
+      <h4>O jogo faz sozinho, dentro da faixa marcada pelo psicólogo</h4>
+      <ul>
+        <li>Subir ou descer um degrau de ajuda.</li>
+        <li>Trocar itens para manter os acertos entre 70% e 85%.</li>
+        <li>Trazer de volta, para revisão, um alvo já aprendido.</li>
+        <li>Levar para a Enseada Calma quando o “como estou” vem alto.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Só o psicólogo decide</h4>
+      <ul>
+        <li>Abrir um alvo novo ou mudar de nível.</li>
+        <li>Declarar um alvo aprendido.</li>
+        <li>Mudar recompensa, frequência ou critério.</li>
+        <li>Aceitar ou recusar as sugestões do jogo. Exemplo: “o alvo X ficou três sessões seguidas abaixo de 50%; considerar descer um nível”.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Travas que ninguém desliga</h3>
+  <p>Algumas regras protegem a criança e não dependem de método. Nem o psicólogo nem os pais conseguem desligá-las:</p>
+  <ul class="regras">
+    <li><strong>Pausa e “agora não”</strong><span>O botão de pausa fica sempre visível e o “agora não” é sempre respeitado.</span></li>
+    <li><strong>Sem punição</strong><span>Nunca se perdem conchas, o Mirante nunca é bloqueado, não existe som de erro.</span></li>
+    <li><strong>Sem pisca-pisca e sem sorteio</strong><span>Nada pisca mais de 3 vezes por segundo, e nenhuma recompensa é aleatória.</span></li>
+    <li><strong>Sem alvo de “parecer menos autista”</strong><span>Não existe alvo para reduzir stim nem para forçar olhar nos olhos.</span></li>
+    <li><strong>Teto de tempo</strong><span>O psicólogo ajusta o limite diário, mas ele nunca passa de 30 minutos, para o jogo não ocupar o tempo de tela que a SBP recomenda para o dia inteiro.</span></li>
+    <li><strong>Chegada e tchau fixos</strong><span>Toda sessão começa com a agenda e termina com o ritual de saída, para a criança sempre saber o que vem.</span></li>
+  </ul>
+
+  <h3>O painel do psicólogo</h3>
+  <p>O painel abre no navegador do computador. No celular, ele serve só para consulta.</p>
+  <div class="elenco">
+    <div><strong>Minhas crianças</strong><span>Lista com a próxima revisão de cada uma e as sugestões do jogo esperando aprovação.</span></div>
+    <div><strong>Ficha da criança</strong><span>A análise registrada (instrumentos usados, resultados, data), os perfis de comunicação e sensorial e os interesses.</span></div>
+    <div><strong>Plano</strong><span>Metas, alvos por lugar, procedimento de ensino e recompensa de cada alvo.</span></div>
+    <div><strong>Gráficos</strong><span>Um por alvo, sessão a sessão: acertos sozinha e degrau de ajuda, com a linha de base antes e uma linha vertical em cada mudança de configuração. Assim se vê se a mudança funcionou, como nos estudos de caso único.</span></div>
+    <div><strong>Casa</strong><span>Missões feitas, notas dos pais e registros ABC.</span></div>
+    <div><strong>Relatório</strong><span>PDF para o prontuário e planilha com todos os dados.</span></div>
+  </div>
+
+  <h3>Exemplo de configuração</h3>
+  <div class="exemplo">
+    <span class="selo">Criança fictícia</span>
+    <p>Seis anos, fala em frases curtas. A análise do psicólogo mostrou crises na passagem para tarefas de mesa; a hipótese funcional é fugir da exigência. Gosta muito de trens.</p>
+    <dl>
+      <div><dt>Lugares abertos</dt><dd>Casa do Farol, Enseada Calma, Vila Conversa e o Mirante, com o tema de trens.</dd></div>
+      <div><dt>Metas</dt><dd>1) Pedir pausa com o cartão em vez de chorar, na mesa da escola. 2) Aceitar o Cartão Surpresa quando alguém oferece uma troca. 3) Reconhecer o nível 4 do termômetro no próprio corpo.</dd></div>
+      <div><dt>Ensino</dt><dd>Da maior para a menor ajuda. Espera de 0 segundo nas duas primeiras sessões, depois 2 e depois 4. Dois itens fáceis para cada novo. Seis tentativas por sessão.</dd></div>
+      <div><dt>Recompensa</dt><dd>Vídeo de 10 segundos de trem a cada pedido de pausa; depois de dominado, a cada dois. Resposta sozinha vale o dobro de conchas.</dd></div>
+      <div><dt>Critério</dt><dd>80% sozinha em duas sessões seguidas; generalização com a foto da mesa real da escola e com a professora.</dd></div>
+      <div><dt>Sensorial</dt><dd>Sem música, efeitos desligados, modo calmo.</dd></div>
+      <div><dt>Tempo</dt><dd>8 minutos, depois do lanche, 5 dias por semana; limite diário de 15 minutos.</dd></div>
+      <div><dt>Missões</dt><dd>Cartão de pausa valendo em casa e na escola; agenda da manhã com fotos da casa.</dd></div>
+      <div><dt>Permissões</dt><dd>Os pais mudam volume e horário. Alvos, recompensa e critérios ficam travados.</dd></div>
+    </dl>
+  </div>
+</section>
+
 <section id="base" aria-labelledby="t-base">
   <p class="eyebrow">O que a psicologia já sabe</p>
   <h2 id="t-base">Base psicológica</h2>
@@ -301,7 +450,7 @@ td:first-child{font-weight:700;width:24%}
     <span><i class="tag forte">Prática com evidência</i> está entre as 28 práticas do NCAEP 2020</span>
     <span><i class="tag ensaio">Ensaio clínico</i> testado com grupo controle sorteado</span>
     <span><i class="tag limitada">Evidência limitada</i> há efeito, mas de qualidade baixa ou sem generalização</span>
-    <span><i class="tag ref">Referencial</i> base teórica ou ética, não é intervenção testada</span>
+    <span><i class="tag ref">Referencial</i> base teórica, ética ou de procedimento; não é intervenção testada</span>
   </div>
   <div class="tabela" role="region" aria-label="Tabela da base psicológica" tabindex="0">
     <table>
@@ -321,6 +470,8 @@ td:first-child{font-weight:700;width:24%}
         <tr><td>Atenção compartilhada e brincar simbólico (JASPER); Modelo Denver (ESDM)</td><td>Clareira do Encontro e a missão diária de brincar</td><td><span class="tag ensaio">Ensaio clínico</span></td><td>Kasari 2006; Dawson 2010</td></tr>
         <tr><td>Intervenção naturalística (inclui PRT) e interesse da criança</td><td>Escolhas da criança e Mirante dos Tesouros</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
         <tr><td>Intervenção implementada pelos pais e por pares</td><td>Missões de casa, Guia do Adulto, modo de dois jogadores</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Avaliação funcional do comportamento</td><td>Hipótese de função registrada pelo psicólogo, ajustes sugeridos por função e registro ABC feito pelos pais</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Avaliação de preferência de recompensas</td><td>Escolha das recompensas pela própria criança, dentro do painel</td><td><span class="tag ref">Referencial</span></td><td>DeLeon e Iwata 1996</td></tr>
         <tr><td>Tecnologia como meio</td><td>O próprio aplicativo</td><td><span class="tag forte">Prática com evidência</span> <span class="tag limitada">Evidência limitada</span></td><td>NCAEP 2020; Grynszpan 2014; Grossard 2017</td></tr>
         <tr><td>Problema da dupla empatia</td><td>Moradores que também aprendem o jeito da criança; Dicionário do Meu Jeito</td><td><span class="tag ref">Referencial</span></td><td>Milton 2012</td></tr>
         <tr><td>Stim como autorregulação</td><td>O jogo nunca pune nem corrige stim; o Lume também balança os braços</td><td><span class="tag ref">Referencial</span></td><td>Kapp 2019</td></tr>
@@ -342,8 +493,33 @@ td:first-child{font-weight:700;width:24%}
     <li><strong>O perfil sensorial configura o jogo</strong><span>Volume separado para música, efeitos e voz. Modo calmo com cores suaves e menos animação. Nenhum som começa de repente.</span></li>
     <li><strong>O corpo não pode atrapalhar</strong><span>Alvos de toque grandes (48 pixels ou mais). Todo arrastar tem a alternativa de tocar e tocar de novo.</span></li>
     <li><strong>A criança pode dizer não</strong><span>“Agora não” é resposta válida e o jogo espera. O botão “Preciso de pausa” fica sempre visível, e usar o botão rende elogio.</span></li>
-    <li><strong>Sessão tem fim</strong><span>Limite diário padrão de 20 minutos, dentro da orientação da Sociedade Brasileira de Pediatria. Sem anúncio, sem compra, sem internet, sem chat.</span></li>
+    <li><strong>Sessão tem fim</strong><span>Limite diário padrão de 20 minutos, dentro da orientação da Sociedade Brasileira de Pediatria. Sem anúncio, sem compra, sem chat. Funciona sem internet.</span></li>
     <li><strong>O alvo não é parecer menos autista</strong><span>O jogo não força olhar nos olhos, não corrige stim e não premia disfarce. Os alvos são comunicar, entender e ser entendido, ganhar autonomia e sofrer menos.</span></li>
+  </ul>
+</section>
+
+<section id="telas" aria-labelledby="t-telas">
+  <p class="eyebrow">O mesmo jogo em duas telas</p>
+  <h2 id="t-telas">Celular e tablet</h2>
+  <p>O jogo roda em celular e em tablet, Android e iPhone, inclusive em aparelhos simples e antigos. O conteúdo é o mesmo nos dois; o que muda é a forma de mostrar, porque a tela do celular é menor e muitas vezes é o aparelho dos pais.</p>
+  <div class="tabela" role="region" aria-label="Diferenças entre tablet e celular" tabindex="0">
+    <table>
+      <thead><tr><th>Item</th><th>Tablet</th><th>Celular</th></tr></thead>
+      <tbody>
+        <tr><td>Posição da tela</td><td>Deitada (horizontal)</td><td>Em pé (vertical)</td></tr>
+        <tr><td>Opções por tentativa</td><td>Até 4 nos níveis 1 e 2; até 6 no nível 3</td><td>Até 3; nada exige rolar a tela</td></tr>
+        <tr><td>Toque</td><td>Alvos de 48 pixels ou mais, com folga entre eles</td><td>Os mesmos 48 pixels, com mais folga; o botão de pausa fica sempre no mesmo canto</td></tr>
+        <tr><td>Cenário</td><td>A ilha inteira ao fundo</td><td>Só o lugar da missão, com menos detalhe</td></tr>
+        <tr><td>Clareira do Encontro</td><td>Dois jogadores lado a lado, no mesmo tablet</td><td>“Passa a vez”: o celular vai de mão em mão, o que já treina o revezamento</td></tr>
+        <tr><td>Histórias e vídeos</td><td>Tela cheia na horizontal</td><td>Na vertical, com legenda grande embaixo</td></tr>
+        <tr><td>Painel do psicólogo</td><td colspan="2">No navegador do computador; pelo celular, só consulta</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="lista">
+    <li><b>Aparelho dos pais.</b> Antes da sessão, o jogo lembra o adulto de ligar o “Não perturbe” e de fixar a tela (Acesso Guiado no iPhone, Fixar app no Android). Assim a criança não sai do jogo e nenhuma notificação interrompe no meio da tarefa.</li>
+    <li><b>Sem internet, tudo funciona.</b> Os dados ficam guardados no aparelho, cifrados. Quando há internet, e só com a autorização do responsável, eles sincronizam com o painel do psicólogo. No consultório, o psicólogo também pode passar a configuração por QR code, sem internet.</li>
+    <li><b>Troca de aparelho.</b> Com a sincronização ligada, a ilha, as conchas e o plano ficam na conta da criança, e não só no aparelho: se o celular quebrar, nada se perde. Sem sincronização, o psicólogo exporta e importa tudo pelo painel.</li>
   </ul>
 </section>
 
@@ -439,12 +615,12 @@ td:first-child{font-weight:700;width:24%}
 <section id="sessao" aria-labelledby="t-sessao">
   <p class="eyebrow">O ciclo que se repete</p>
   <h2 id="t-sessao">Como é uma sessão</h2>
-  <p>Toda sessão tem a mesma forma, para a criança saber o que vem. Muda só o lugar visitado na parte do meio.</p>
+  <p>Toda sessão tem a mesma forma, para a criança saber o que vem. Muda só o lugar visitado na parte do meio. Os tempos abaixo são o padrão: o psicólogo muda a duração de cada parte e pode tirar o aquecimento ou o tesouro. A chegada e o tchau ficam sempre.</p>
   <ol class="sessao">
     <li><span class="min">1 min</span><strong>Chegada</strong><p>A agenda da sessão aparece em 4 pictogramas. O Lume diz o que vai acontecer.</p></li>
     <li><span class="min">1 min</span><strong>Como estou</strong><p>A criança marca a própria energia no termômetro. Se marcar “fervendo”, a sessão vai direto para a Enseada Calma.</p></li>
     <li><span class="min">1 a 2 min</span><strong>Aquecimento</strong><p>Duas tarefas que a criança já domina, para chegar confiante na tarefa nova.</p></li>
-    <li><span class="min">5 a 8 min</span><strong>Missão do dia</strong><p>Um lugar da ilha, com o alvo definido pelo terapeuta.</p></li>
+    <li><span class="min">5 a 8 min</span><strong>Missão do dia</strong><p>Um lugar da ilha, com o alvo definido pelo psicólogo.</p></li>
     <li><span class="min">2 min</span><strong>Tesouro</strong><p>Tempo livre no Mirante, com o interesse da criança. Aqui se gastam as conchas.</p></li>
     <li><span class="min">1 min</span><strong>Tchau</strong><p>Carta da missão de casa, prévia da próxima vez e o mesmo ritual de despedida todo dia.</p></li>
   </ol>
@@ -455,7 +631,7 @@ td:first-child{font-weight:700;width:24%}
   <p class="eyebrow">Como o jogo ensina</p>
   <h2 id="t-ajuda">Ajuda e recompensa</h2>
   <h3>A escada de ajuda</h3>
-  <p>Quando a criança não responde, o jogo sobe um degrau de ajuda por vez. A ideia é dar só a ajuda necessária e ir tirando aos poucos.</p>
+  <p>Quando a criança não responde, o jogo sobe um degrau de ajuda por vez. A ideia é dar só a ajuda necessária e ir tirando aos poucos. Esta é a escada padrão, da menor para a maior ajuda. O psicólogo pode inverter a ordem (começar com ajuda total e ir tirando), tirar degraus e mudar os tempos e as conchas de cada um.</p>
   <ol class="escada">
     <li><span class="grau">Degrau 0</span><span>A criança responde sozinha.</span><span class="premio">2 conchas</span></li>
     <li><span class="grau">Degrau 1</span><span>Espera. Nada acontece por 3 segundos (o adulto ajusta de 0 a 10). Dá tempo de processar sem pressa.</span><span class="premio"></span></li>
@@ -467,7 +643,7 @@ td:first-child{font-weight:700;width:24%}
     <li><b>Tirar a ajuda aos poucos.</b> Na sessão seguinte, o jogo começa um degrau abaixo do que a criança precisou, para ela não depender da dica.</li>
     <li><b>Aprender sem errar.</b> Depois de um erro, o jogo não repete o mesmo item em seguida: passa para um fácil e volta ao difícil mais tarde.</li>
     <li><b>Faixa certa de dificuldade.</b> O jogo ajusta os itens para a criança acertar entre 70% e 85% das vezes: difícil o bastante para aprender, fácil o bastante para não frustrar.</li>
-    <li><b>Quando conta como aprendido.</b> 80% de acertos sozinha em 2 sessões seguidas, e depois passar no degrau seguinte de generalização (foto real, foto da família, missão).</li>
+    <li><b>Quando conta como aprendido.</b> Pelo padrão, 80% de acertos sozinha em 2 sessões seguidas, e depois passar no degrau seguinte de generalização (foto real, foto da família, missão). O psicólogo define o próprio critério, e só ele declara o alvo aprendido.</li>
   </ul>
 
   <h3>As recompensas</h3>
@@ -484,7 +660,7 @@ td:first-child{font-weight:700;width:24%}
 <section id="lugares" aria-labelledby="t-lugares">
   <p class="eyebrow">Os módulos do jogo</p>
   <h2 id="t-lugares">Os lugares da ilha</h2>
-  <p>São oito lugares. Cada um tem um objetivo terapêutico, três níveis, uma cena de exemplo, uma missão de casa e o que o jogo registra para o adulto e o terapeuta.</p>
+  <p>São oito lugares. Cada um tem um objetivo terapêutico, três níveis, uma cena de exemplo, uma missão de casa e o que o jogo registra para o adulto e o psicólogo. Cada lugar é um bloco que o psicólogo abre ou fecha. Os alvos, as imagens e as falas de cada lugar podem ser trocados por outros do banco ou criados por ele.</p>
 
   <article class="lugar" id="farol">
     <header><p class="habil">Rotina e previsibilidade</p><h3>Casa do Farol</h3></header>
@@ -672,7 +848,7 @@ td:first-child{font-weight:700;width:24%}
     <li><b>Prólogo, “A noite da ventania”.</b> Primeira sessão: conhecer o Lume, montar o avatar, preencher o “Meu Jeito” com o adulto e achar a primeira concha no próprio farol.</li>
     <li><b>Um capítulo por lugar.</b> O capítulo termina quando a criança ajuda três moradores. O farol ganha um anel de luz.</li>
     <li><b>Final, “A Festa da Luz”.</b> O farol acende inteiro e a criança planeja a festa: luz forte ou suave, som alto, baixo ou nenhum, quantos convidados, abraço ou só tchau com a mão. Os moradores montam o Dicionário da Ilha, em que cada um explica o próprio jeito, a criança também. A mensagem final: aqui todo mundo aprendeu o jeito de todo mundo.</li>
-    <li><b>Depois do final.</b> A ilha continua em modo de manutenção, com missões novas e sessões menos frequentes. O terapeuta pode abrir alvos novos.</li>
+    <li><b>Depois do final.</b> A ilha continua em modo de manutenção, com missões novas e sessões menos frequentes. O psicólogo pode abrir alvos novos.</li>
   </ul>
 
   <h3>Cena de abertura</h3>
@@ -707,7 +883,7 @@ td:first-child{font-weight:700;width:24%}
 <section id="perfis" aria-labelledby="t-perfis">
   <p class="eyebrow">Um jogo, três jeitos de jogar</p>
   <h2 id="t-perfis">Perfis de suporte</h2>
-  <p>Quem escolhe o perfil é o profissional, pela necessidade da criança, e não pela idade. As idades abaixo são só o caso mais comum.</p>
+  <p>Os perfis são modelos de partida, para o psicólogo não começar do zero. Ele escolhe um pela necessidade da criança, e não pela idade, muda o que quiser e pode salvar o resultado em “Meus modelos”. As idades abaixo são só o caso mais comum.</p>
   <div class="elenco">
     <div><strong>Perfil A · mais suporte</strong><span>Pouca ou nenhuma fala, em geral de 4 a 6 anos. Só pictograma e voz, uma instrução por vez, adulto sempre junto, sessões de 5 a 8 minutos. Prioridade: Vila Conversa (pedir e pausa), Casa do Farol, Enseada Calma e Clareira do Encontro.</span></div>
     <div><strong>Perfil B · suporte moderado</strong><span>Fala em frases curtas. Todos os lugares, nos níveis 1 e 2.</span></div>
@@ -717,7 +893,8 @@ td:first-child{font-weight:700;width:24%}
 
 <section id="adulto" aria-labelledby="t-adulto">
   <p class="eyebrow">Quem joga junto</p>
-  <h2 id="t-adulto">O papel do adulto</h2>
+  <h2 id="t-adulto">Pais e cuidadores</h2>
+  <p>O psicólogo planeja; quem está com a criança todos os dias são os pais. O jogo dá a eles o mínimo para aplicar bem e devolver ao psicólogo o que viram em casa.</p>
   <h3>Guia do Adulto: cinco regras</h3>
   <ol class="lista">
     <li>Espere 5 segundos antes de ajudar.</li>
@@ -726,22 +903,24 @@ td:first-child{font-weight:700;width:24%}
     <li>Nunca force olhar nos olhos e nunca interrompa o stim.</li>
     <li>Se a criança se desregular, pare. O jogo espera; a relação vem primeiro.</li>
   </ol>
-  <h3>Painel do adulto, com trava</h3>
+  <h3>Área dos pais, com trava</h3>
   <ul class="lista">
-    <li>Metas do plano terapêutico: o terapeuta escolhe os alvos e os níveis.</li>
-    <li>Fotos para as “Histórias Minhas” e para os rostos da família.</li>
+    <li>As missões da semana, com a orientação escrita ou gravada pelo psicólogo.</li>
+    <li>Fotos para as “Histórias Minhas” e para os rostos da família, quando o psicólogo pedir.</li>
     <li>Cartas de missão, agenda visual e listas de passos para imprimir.</li>
-    <li>Relatório semanal simples: o que ficou fácil, o que ainda precisa de ajuda, os “como estou” da semana e as missões feitas.</li>
-    <li>Configuração sensorial, tempo de espera da escada de ajuda e limite diário.</li>
+    <li>Um relatório semanal simples: o que ficou fácil, o que ainda precisa de ajuda, os “como estou” da semana e as missões feitas.</li>
+    <li>Só os ajustes que o psicólogo liberou (por exemplo, volume e horário). O resto aparece travado, com o aviso “combinado com o psicólogo”.</li>
   </ul>
+  <h3>Registro ABC em três toques</h3>
+  <p>Quando acontece uma crise ou algo importante, os pais registram em três toques: o que aconteceu antes, o que a criança fez e o que aconteceu depois (antecedente, comportamento, consequência). Há opções prontas e um campo livre. O psicólogo vê os registros no painel e usa na avaliação funcional. É a forma de levar para o consultório o que só acontece em casa.</p>
   <h3>Preparação dos pais</h3>
-  <p>No Secret Agent Society, os pais tiveram um webinário inicial de 150 minutos e acompanhamento online semanal de 30 minutos. O mesmo desenho vale aqui: um vídeo curto por lugar da ilha e uma conversa semanal de 20 a 30 minutos com o terapeuta durante as 12 semanas.</p>
+  <p>No Secret Agent Society, os pais tiveram um webinário inicial de 150 minutos e acompanhamento online semanal de 30 minutos. O mesmo desenho vale aqui: um vídeo curto por lugar da ilha (o psicólogo pode trocar pelo vídeo dele) e uma conversa semanal de 20 a 30 minutos com o psicólogo durante o programa.</p>
 </section>
 
 <section id="programa" aria-labelledby="t-programa">
   <p class="eyebrow">A ordem sugerida</p>
   <h2 id="t-programa">Programa de 12 semanas</h2>
-  <p>Primeiro vem a segurança (prever, se acalmar, pedir pausa), depois o resto. Criança em alerta não aprende. O terapeuta pode mudar a ordem conforme as metas.</p>
+  <p>Esta é a ordem sugerida para quando o psicólogo não definir outra. Primeiro vem a segurança (prever, se acalmar, pedir pausa), depois o resto: criança em alerta não aprende. O psicólogo muda a ordem, o ritmo e a duração conforme as metas de cada criança.</p>
   <ol class="programa">
     <li><b>Semana 1</b><span>Prólogo, Casa do Farol e Mirante. O botão de pausa é ensinado no primeiro dia.</span></li>
     <li><b>Semanas 2 e 3</b><span>Enseada Calma, com o Cartão Surpresa da Casa do Farol.</span></li>
@@ -760,16 +939,16 @@ td:first-child{font-weight:700;width:24%}
   <h2 id="t-medir">Como saber se funciona</h2>
   <h3>O que medir</h3>
   <ul class="lista">
-    <li><b>Dentro do jogo, sozinho:</b> acertos sem ajuda por alvo, degrau de ajuda usado, tempo de resposta, uso da pausa e os “como estou”.</li>
+    <li><b>Dentro do jogo, sozinho:</b> linha de base de cada alvo, acertos sem ajuda, degrau de ajuda usado, tempo de resposta, uso da pausa e os “como estou”. Tudo vira um gráfico por alvo, com uma linha vertical a cada mudança feita pelo psicólogo.</li>
     <li><b>Fora do jogo, o que importa:</b> missões feitas e a nota do adulto de 0 a 3 para cada uma.</li>
-    <li><b>Metas individuais (escala de alcance de metas):</b> três metas escritas com o terapeuta no começo, cada uma com cinco resultados possíveis, de −2 a +2.</li>
+    <li><b>Metas individuais (escala de alcance de metas):</b> três metas escritas pelo psicólogo no começo, cada uma com cinco resultados possíveis, de −2 a +2.</li>
     <li><b>Instrumentos padronizados:</b> escolhidos pelo profissional e aplicados antes e depois (comportamento adaptativo, responsividade social, regulação emocional).</li>
     <li><b>O olhar de quem não aplica:</b> a avaliação do professor, como no Secret Agent Society, mostra se a mudança apareceu fora de casa.</li>
   </ul>
   <h3>Plano de validação</h3>
   <ol class="fases">
     <li><strong>Codesenho</strong><span>Adultos autistas, pais, psicólogos, fonoaudiólogos e terapeutas ocupacionais revisam roteiro e arte antes de qualquer programação.</span></li>
-    <li><strong>Usabilidade</strong><span>8 a 10 crianças dos três perfis testam primeiro um protótipo em papel e depois o digital. Mede-se desconforto sensorial e entendimento.</span></li>
+    <li><strong>Usabilidade</strong><span>8 a 10 crianças dos três perfis testam primeiro um protótipo em papel e depois o digital, em celular e em tablet. Mede-se desconforto sensorial e entendimento. Em paralelo, 5 psicólogos configuram uma criança fictícia no painel; a meta é conseguir em até 20 minutos, sem ajuda.</span></li>
     <li><strong>Piloto de caso único</strong><span>3 a 6 crianças, com linha de base múltipla: os alvos entram em semanas diferentes, e cada criança serve de controle dela mesma.</span></li>
     <li><strong>Ensaio clínico</strong><span>Grupo controle ativo (um jogo sem os componentes terapêuticos, como fez o Secret Agent Society), aprovado por Comitê de Ética em Pesquisa (Resolução CNS 466/2012).</span></li>
   </ol>
@@ -781,7 +960,10 @@ td:first-child{font-weight:700;width:24%}
   <h2 id="t-etica">Ética e segurança</h2>
   <ul class="lista">
     <li><b>Complemento, não substituto.</b> O jogo não substitui psicólogo, fonoaudiólogo, terapeuta ocupacional ou médico. As metas vêm do plano terapêutico.</li>
-    <li><b>Dado de saúde de criança é dado sensível.</b> A LGPD trata dado de saúde como sensível (art. 11) e exige, para dado de criança, consentimento específico e em destaque de pelo menos um dos pais ou do responsável (art. 14). Por isso o jogo funciona sem internet, as fotos da família ficam só no aparelho e nada sai do tablet sem o adulto exportar.</li>
+    <li><b>Não é teste psicológico.</b> O jogo não aplica teste, não dá diagnóstico e não gera laudo. A análise é do psicólogo, com os instrumentos que ele escolher; no painel ele só registra o resultado. Teste psicológico é de uso privativo do psicólogo e segue o manual aprovado no SATEPSI (Resolução CFP 31/2022). O jogo também não copia itens de instrumentos protegidos.</li>
+    <li><b>O painel faz parte do prontuário.</b> A Resolução CFP 01/2009 obriga o registro documental do serviço psicológico, com guarda mínima de 5 anos sob responsabilidade do psicólogo, e dá ao responsável acesso integral ao que foi registrado. O painel exporta tudo e guarda pelo prazo que o psicólogo definir.</li>
+    <li><b>Acompanhamento a distância.</b> Quando o psicólogo acompanha a criança pelo painel, sem estar junto, vale a Resolução CFP 11/2018, que regula o serviço psicológico feito por tecnologia e pede o cadastro no e-Psi.</li>
+    <li><b>Dado de saúde de criança é dado sensível.</b> A LGPD trata dado de saúde como sensível (art. 11) e exige, para dado de criança, consentimento específico e em destaque de pelo menos um dos pais ou do responsável (art. 14). Por isso os dados ficam cifrados no aparelho, a sincronização com o painel só acontece com essa autorização, e o responsável pode revogar quando quiser. O psicólogo (ou a clínica) responde pelos dados que coleta; a plataforma só guarda e transmite.</li>
     <li><b>Assentimento da criança.</b> “Agora não” é respeitado sempre.</li>
     <li><b>Sem desenho viciante.</b> Sem recompensa aleatória, sem sequência diária, sem notificação, sem anúncio, sem compra.</li>
     <li><b>Linguagem.</b> O jogo não fala em “doença”, “cura” ou “normal”. Fala em jeito, necessidade e ajuda.</li>
@@ -793,9 +975,10 @@ td:first-child{font-weight:700;width:24%}
   <p class="eyebrow">Próximas decisões</p>
   <h2 id="t-aberto">O que falta decidir</h2>
   <ol class="lista">
-    <li><b>Plataforma.</b> Só tablet, ou também uma versão de tabuleiro para clínica e escola.</li>
-    <li><b>Público da primeira versão.</b> Os três perfis ou começar pelos perfis B e C, deixando o A para a segunda.</li>
-    <li><b>Codesenho.</b> Quem participa: grupo de adultos autistas e uma clínica parceira.</li>
+    <li><b>Sincronização.</b> Só no consultório, por QR code (mais simples e mais fechado), ou também pela internet, com o painel na nuvem (mais prático, com mais cuidado de dados).</li>
+    <li><b>Primeiro psicólogo parceiro.</b> Quem entra no codesenho e no piloto, junto com um grupo de adultos autistas.</li>
+    <li><b>Quem mais usa o painel.</b> Só psicólogos, ou também fonoaudiólogos e terapeutas ocupacionais da mesma equipe.</li>
+    <li><b>Modelo de uso.</b> Gratuito, licença por psicólogo ou licença por clínica.</li>
     <li><b>Voz e arte.</b> Voz humana gravada (recomendada) e o estilo visual dos personagens.</li>
     <li><b>Nome.</b> “Ilha do Farol” é nome de trabalho.</li>
   </ol>
@@ -821,10 +1004,14 @@ td:first-child{font-weight:700;width:24%}
     <li>Gray, C. Histórias Sociais (método e critérios). <a href="https://carolgraysocialstories.com/">carolgraysocialstories.com</a>.</li>
     <li>Sociedade Brasileira de Pediatria. Manual de Orientação #MenosTelas #MaisSaúde, atualização. <a href="https://www.sbp.com.br/fileadmin/user_upload/24604c-MO__MenosTelas__MaisSaude-Atualizacao.pdf">SBP</a>.</li>
     <li>W3C. WCAG 2.1, critério 2.3.1: três flashes ou abaixo do limite. <a href="https://w3c.github.io/wcag21/understanding/three-flashes-or-below-threshold.html">W3C</a>.</li>
+    <li>DeLeon, I. G. e Iwata, B. A. (1996). Evaluation of a multiple-stimulus presentation format for assessing reinforcer preferences. <i>Journal of Applied Behavior Analysis</i>, 29(4), 519–533. <a href="https://onlinelibrary.wiley.com/doi/10.1901/jaba.1996.29-519">Wiley</a>.</li>
     <li>Brasil. Lei 13.709/2018 (Lei Geral de Proteção de Dados), arts. 11 e 14.</li>
     <li>Conselho Nacional de Saúde. Resolução 466/2012 (pesquisa com seres humanos).</li>
+    <li>Conselho Federal de Psicologia. Resolução 01/2009 (registro documental). <a href="https://site.cfp.org.br/wp-content/uploads/2009/04/resolucao2009_01.pdf">CFP</a>.</li>
+    <li>Conselho Federal de Psicologia. Resolução 11/2018 (serviços psicológicos por tecnologias da informação e da comunicação). <a href="https://e-psi.cfp.org.br/resolucao-cfp-no-11-2018/">e-Psi</a>.</li>
+    <li>Conselho Federal de Psicologia. Resolução 31/2022 (avaliação psicológica e SATEPSI). <a href="https://satepsi.cfp.org.br/legislacao.cfm">SATEPSI</a>.</li>
   </ol>
-  <p class="rodape">Fontes com link conferidas em 24/09/2026. Documento de desenho de jogo: não é orientação clínica para uma criança específica.</p>
+  <p class="rodape">Versão 2, de 24/09/2026. Fontes com link conferidas nessa data. Documento de desenho de jogo: não é orientação clínica para uma criança específica.</p>
 </section>
 
 </main>
