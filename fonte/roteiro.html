@@ -1,0 +1,817 @@
+<title>Ilha do Farol</title>
+<meta name="description" content="Roteiro de jogo terapêutico para crianças autistas de 4 a 10 anos, baseado em práticas com evidência.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#F1F6F5;
+  --surface:#FFFFFF;
+  --surface-2:#E5EFED;
+  --ink:#14303A;
+  --ink-2:#4A6670;
+  --line:#C6D8D5;
+  --sea:#D2E6E6;
+  --land:#EEE7D3;
+  --land-edge:#D6CAA9;
+  --teal:#2A7778;
+  --teal-soft:#D4E9E8;
+  --amber:#D8952A;
+  --amber-ink:#875810;
+  --amber-soft:#F8EACB;
+  --f-display:"Lexend","Segoe UI",system-ui,sans-serif;
+  --f-body:"Lexend","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D1B20;
+    --surface:#13262E;
+    --surface-2:#19323B;
+    --ink:#E1EDEB;
+    --ink-2:#9CB5BA;
+    --line:#2B4852;
+    --sea:#123039;
+    --land:#22383A;
+    --land-edge:#35514F;
+    --teal:#6CBFBC;
+    --teal-soft:#173A3E;
+    --amber:#F0B654;
+    --amber-ink:#F3C67A;
+    --amber-soft:#35291A;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1B20;
+  --surface:#13262E;
+  --surface-2:#19323B;
+  --ink:#E1EDEB;
+  --ink-2:#9CB5BA;
+  --line:#2B4852;
+  --sea:#123039;
+  --land:#22383A;
+  --land-edge:#35514F;
+  --teal:#6CBFBC;
+  --teal-soft:#173A3E;
+  --amber:#F0B654;
+  --amber-ink:#F3C67A;
+  --amber-soft:#35291A;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-weight:300;font-size:16.5px;line-height:1.68}
+b,strong,td:first-child{font-weight:600}
+a{color:var(--teal);text-underline-offset:3px}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:4px}
+h1,h2,h3,h4{font-family:var(--f-display);text-wrap:balance;line-height:1.2;margin:0}
+h2{font-size:1.7rem;font-weight:600;letter-spacing:-.01em}
+h3{font-size:1.28rem;font-weight:600}
+h4{font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+p{margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 72px;display:grid;grid-template-columns:minmax(0,1fr);gap:32px}
+@media (min-width:1080px){.wrap{grid-template-columns:210px minmax(0,1fr);gap:56px}}
+
+/* sumário */
+.toc{font-family:var(--f-display);font-size:.9rem}
+.toc details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.toc summary{cursor:pointer;font-weight:600}
+.toc ol{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.toc a{color:var(--ink-2);text-decoration:none}
+.toc a:hover{color:var(--teal)}
+@media (min-width:1080px){
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 28px);align-self:start}
+  .toc details{background:none;border:0;padding:0}
+  .toc summary{list-style:none;pointer-events:none;color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em;font-size:.75rem}
+  .toc summary::-webkit-details-marker{display:none}
+}
+
+main{min-width:0;display:grid;gap:72px}
+section{display:grid;gap:18px;scroll-margin-top:24px}
+section > p, .prosa{max-width:68ch}
+.eyebrow{font-family:var(--f-display);font-size:.78rem;font-weight:500;text-transform:uppercase;letter-spacing:.09em;color:var(--teal)}
+
+/* abertura */
+.abertura{display:grid;gap:22px;padding-top:8px}
+.abertura h1{font-size:clamp(2.6rem,7vw,4.4rem);font-weight:700;letter-spacing:-.025em}
+.abertura h1 span{background:linear-gradient(90deg,transparent 0,var(--amber-soft) 12%,var(--amber-soft) 88%,transparent 100%);padding:0 .12em}
+.lede{font-size:1.2rem;max-width:60ch;color:var(--ink)}
+.ficha{display:grid;grid-template-columns:minmax(0,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:0}
+@media (min-width:460px){.ficha{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:760px){.ficha{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ficha div{background:var(--surface);padding:14px 16px;display:grid;gap:4px}
+.ficha dt{font-family:var(--f-display);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+.ficha dd{margin:0;font-size:.98rem}
+
+/* tese */
+.tese{background:var(--amber-soft);border-radius:16px;padding:26px 24px;display:grid;gap:12px}
+.tese p.frase{font-family:var(--f-display);font-size:clamp(1.35rem,3.4vw,1.9rem);font-weight:600;letter-spacing:-.01em;max-width:none}
+.tese p{max-width:64ch}
+
+.degraus{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;counter-reset:d}
+.degraus li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px;counter-increment:d}
+.degraus li::before{content:"Degrau " counter(d);font-family:var(--f-display);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.degraus strong{font-family:var(--f-display);font-weight:600}
+.degraus span{font-size:.92rem;color:var(--ink-2)}
+
+/* tabela */
+.tabela{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:.93rem}
+th,td{text-align:left;vertical-align:top;padding:11px 14px;border-bottom:1px solid var(--line)}
+th{font-family:var(--f-display);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-2);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700;width:24%}
+.tag{display:inline-block;font-family:var(--f-display);font-size:.72rem;font-weight:500;padding:2px 9px;border-radius:999px;white-space:nowrap;border:1px solid var(--line);color:var(--ink)}
+.tag.forte{background:var(--teal-soft);border-color:transparent}
+.tag.ensaio{background:var(--amber-soft);border-color:transparent;color:var(--amber-ink)}
+.tag.limitada{background:transparent;border-style:dashed}
+.tag.ref{background:var(--surface-2);border-color:transparent;color:var(--ink-2)}
+.legenda{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:.88rem;color:var(--ink-2)}
+.legenda span{display:inline-flex;gap:8px;align-items:center}
+.nota{font-size:.93rem;color:var(--ink-2);max-width:72ch}
+
+/* princípios */
+.regras{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px 22px}
+.regras li{border-top:2px solid var(--teal);padding-top:12px;display:grid;gap:6px}
+.regras strong{font-family:var(--f-display);font-weight:600;font-size:1.02rem}
+.regras span{font-size:.95rem;color:var(--ink-2)}
+
+/* mapa */
+.mapa{margin:0;display:grid;gap:10px}
+.mapa .quadro{overflow-x:auto}
+.mapa svg{display:block;width:100%;min-width:560px;height:auto}
+.mapa figcaption{font-size:.9rem;color:var(--ink-2)}
+.mapa .mar{fill:var(--sea)}
+.mapa .terra{fill:var(--land);stroke:var(--land-edge);stroke-width:2}
+.mapa .onda{fill:none;stroke:var(--line);stroke-width:1.6;stroke-linecap:round}
+.mapa .trilha{fill:none;stroke:var(--teal);stroke-width:2;stroke-dasharray:2 7;stroke-linecap:round;opacity:.8}
+.mapa .ponto{fill:var(--surface);stroke:var(--teal);stroke-width:3}
+.mapa .torre{fill:var(--surface);stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.mapa .faixa{fill:var(--teal)}
+.mapa .lanterna{fill:var(--amber)}
+.mapa .escuro{fill:var(--ink)}
+.mapa .etiqueta{fill:var(--land)}
+.mapa .rotulo{fill:var(--ink);font-family:var(--f-display);font-weight:600;font-size:14px}
+.mapa .sub{fill:var(--ink-2);font-family:var(--f-body);font-size:12.5px}
+.mapa .fa{stop-color:var(--amber);stop-opacity:.5}
+.mapa .fb{stop-color:var(--amber);stop-opacity:0}
+
+/* personagens */
+.elenco{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.elenco.moradores{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.elenco div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px}
+.elenco strong{font-family:var(--f-display);font-weight:600}
+.elenco span{font-size:.94rem;color:var(--ink-2)}
+.elenco .destaque{background:var(--teal-soft);border-color:transparent}
+.elenco .destaque span{color:var(--ink)}
+
+/* sessão */
+.sessao{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+@media (min-width:460px){.sessao{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:760px){.sessao{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.sessao li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px;align-content:start}
+.sessao .min{font-family:var(--f-display);font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--amber-ink);font-variant-numeric:tabular-nums}
+.sessao strong{font-family:var(--f-display);font-weight:600}
+.sessao p{font-size:.92rem;color:var(--ink-2)}
+
+/* escada */
+.escada{list-style:none;margin:0;padding:0;display:grid;gap:8px;max-width:760px}
+.escada li{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:14px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.escada .grau{font-family:var(--f-display);font-weight:600;font-size:.85rem;color:var(--teal)}
+.escada .premio{font-family:var(--f-display);font-size:.8rem;color:var(--amber-ink);white-space:nowrap}
+@media (max-width:560px){.escada li{grid-template-columns:1fr}.escada .premio{justify-self:start}}
+
+/* lugares */
+.lugar{display:grid;gap:16px;padding-top:26px;border-top:1px solid var(--line)}
+.lugar header{display:grid;gap:6px}
+.lugar .habil{font-family:var(--f-display);font-size:.8rem;font-weight:500;color:var(--teal);text-transform:uppercase;letter-spacing:.08em}
+.lugar dl{margin:0;display:grid;gap:14px}
+.lugar dl > div{display:grid;gap:4px;max-width:72ch}
+.lugar dt{font-family:var(--f-display);font-size:.76rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)}
+.lugar dd{margin:0}
+.niveis{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.niveis li{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px}
+.niveis b{font-family:var(--f-display);font-weight:600;font-size:.85rem;color:var(--teal)}
+.missao{background:var(--amber-soft);border-radius:12px;padding:14px 16px;max-width:72ch;display:grid;gap:4px}
+.missao h4{color:var(--amber-ink)}
+
+/* roteiro em formato de cena */
+.cena{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:8px;max-width:72ch}
+.cena p{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px}
+.cena .quem{font-family:var(--f-display);font-size:.74rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);padding-top:3px}
+.cena .rub{display:block;font-style:italic;color:var(--ink-2)}
+.cena .ramo{border-left:2px dashed var(--line);padding-left:12px;display:grid;gap:8px}
+@media (max-width:520px){.cena p{grid-template-columns:1fr;gap:2px}}
+
+.lista{margin:0;padding-left:1.2em;display:grid;gap:8px;max-width:72ch}
+.programa{list-style:none;margin:0;padding:0;display:grid;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.programa li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.programa li:last-child{border-bottom:0}
+.programa b{font-family:var(--f-display);font-weight:600;font-variant-numeric:tabular-nums;color:var(--teal)}
+@media (max-width:520px){.programa li{grid-template-columns:1fr;gap:2px}}
+
+.fases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;counter-reset:f}
+.fases li{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:6px;counter-increment:f;align-content:start}
+.fases li::before{content:"Fase " counter(f);font-family:var(--f-display);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.fases strong{font-family:var(--f-display);font-weight:600}
+.fases span{font-size:.93rem;color:var(--ink-2)}
+.aviso{border:2px solid var(--teal);border-radius:14px;padding:16px 18px;max-width:72ch;font-weight:700}
+
+.refs{margin:0;padding-left:1.3em;display:grid;gap:8px;font-size:.92rem;max-width:80ch}
+.refs li::marker{color:var(--ink-2)}
+.rodape{font-size:.85rem;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Sumário">
+  <details open>
+    <summary>Sumário</summary>
+    <ol>
+      <li><a href="#ideia">A ideia central</a></li>
+      <li><a href="#base">Base psicológica</a></li>
+      <li><a href="#principios">Princípios de desenho</a></li>
+      <li><a href="#mundo">O mundo e o elenco</a></li>
+      <li><a href="#sessao">Como é uma sessão</a></li>
+      <li><a href="#ajuda">Ajuda e recompensa</a></li>
+      <li><a href="#lugares">Os lugares da ilha</a></li>
+      <li><a href="#historia">A história</a></li>
+      <li><a href="#perfis">Perfis de suporte</a></li>
+      <li><a href="#adulto">O papel do adulto</a></li>
+      <li><a href="#programa">Programa de 12 semanas</a></li>
+      <li><a href="#medir">Como saber se funciona</a></li>
+      <li><a href="#etica">Ética e segurança</a></li>
+      <li><a href="#aberto">O que falta decidir</a></li>
+      <li><a href="#fontes">Referências</a></li>
+    </ol>
+  </details>
+</nav>
+
+<main>
+
+<header class="abertura">
+  <p class="eyebrow">Roteiro de jogo terapêutico · versão 1 · 24/09/2026</p>
+  <h1><span>Ilha do Farol</span></h1>
+  <p class="lede">Um jogo para crianças autistas de 4 a 10 anos. A criança ajuda um polvinho a reacender o farol da ilha. Cada lugar da ilha treina uma habilidade que a terapia já usa, e cada sessão termina com uma missão para fazer fora da tela, junto com um adulto.</p>
+  <dl class="ficha">
+    <div><dt>Público</dt><dd>Crianças autistas de 4 a 10 anos, em três perfis de suporte</dd></div>
+    <div><dt>Formato</dt><dd>Aplicativo de tablet, sem internet, com cartas de missão para imprimir</dd></div>
+    <div><dt>Sessão</dt><dd>10 a 15 minutos, de 3 a 5 vezes por semana</dd></div>
+    <div><dt>Programa</dt><dd>12 semanas, depois modo de manutenção</dd></div>
+    <div><dt>Quem media</dt><dd>Pais ou cuidadores, com metas definidas pelo terapeuta</dd></div>
+    <div><dt>Papel</dt><dd>Complemento da terapia, nunca substituto</dd></div>
+  </dl>
+</header>
+
+<section id="ideia" aria-labelledby="t-ideia">
+  <p class="eyebrow">Por que um jogo híbrido</p>
+  <h2 id="t-ideia">A ideia central</h2>
+  <p>A pesquisa com jogos para autismo repete um achado: a criança aprende a tarefa do jogo, mas leva pouco dela para a vida. A revisão Cochrane sobre intervenções de Teoria da Mente (Fletcher-Watson e colegas, 2014) encontrou efeito no treino de reconhecer emoções, mas pouca prova de que a habilidade se mantém ou aparece em outro lugar, com outra pessoa. Whyte, Smyth e Scherf (2015) chegaram ao mesmo ponto para os jogos de computador em geral.</p>
+  <p>O programa em jogo que mais se destacou em ensaio clínico, o Secret Agent Society, não é só um jogo. Ele junta o jogo, cartões visuais, missões em casa e pais treinados. Com 70 famílias e crianças de 7 a 12 anos, melhorou as habilidades sociais na avaliação dos pais e também na dos professores, que não participaram da aplicação (Beaumont e colegas, 2021).</p>
+  <div class="tese">
+    <p class="frase">A tela é o ensaio. A vida é o palco.</p>
+    <p>Essa regra organiza o jogo inteiro. Cada habilidade sobe quatro degraus, até não depender mais do lugar onde foi aprendida. É a programação para generalização descrita por Stokes e Baer (1977): variar exemplos, pessoas e lugares de propósito.</p>
+  </div>
+  <ol class="degraus" aria-label="Degraus de generalização">
+    <li><strong>Desenho</strong><span>O morador da ilha mostra a situação.</span></li>
+    <li><strong>Foto real</strong><span>Rostos e lugares de verdade, de várias idades e etnias.</span></li>
+    <li><strong>Foto da família</strong><span>O adulto coloca fotos da casa, da escola e das pessoas da criança.</span></li>
+    <li><strong>Vida real</strong><span>A missão de casa leva a habilidade para a situação de verdade.</span></li>
+  </ol>
+</section>
+
+<section id="base" aria-labelledby="t-base">
+  <p class="eyebrow">O que a psicologia já sabe</p>
+  <h2 id="t-base">Base psicológica</h2>
+  <p>Cada mecânica do jogo vem de uma prática conhecida. A tabela mostra de onde vem cada uma e quanto de prova existe por trás dela.</p>
+  <div class="legenda" aria-label="Legenda">
+    <span><i class="tag forte">Prática com evidência</i> está entre as 28 práticas do NCAEP 2020</span>
+    <span><i class="tag ensaio">Ensaio clínico</i> testado com grupo controle sorteado</span>
+    <span><i class="tag limitada">Evidência limitada</i> há efeito, mas de qualidade baixa ou sem generalização</span>
+    <span><i class="tag ref">Referencial</i> base teórica ou ética, não é intervenção testada</span>
+  </div>
+  <div class="tabela" role="region" aria-label="Tabela da base psicológica" tabindex="0">
+    <table>
+      <thead><tr><th>Conceito</th><th>Onde entra no jogo</th><th>Prova</th><th>Fonte</th></tr></thead>
+      <tbody>
+        <tr><td>Apoios visuais e ensino estruturado (TEACCH)</td><td>Agenda visual de toda sessão, pictograma em todo botão, Casa do Farol</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Intervenção baseada em antecedentes</td><td>Aviso antes de cada troca, timer visual, a mesma coisa sempre no mesmo lugar</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Reforço positivo e economia de fichas</td><td>Conchas de luz, farol que acende, elogio que nomeia a ação</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Dicas e atraso de tempo</td><td>Escada de ajuda com espera antes da dica</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Momento comportamental</td><td>Duas tarefas fáceis antes de cada tarefa nova</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Treino de comunicação funcional e comunicação alternativa (inclui PECS)</td><td>Vila Conversa e o botão “Preciso de pausa”</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Estratégias cognitivo-comportamentais e autogerenciamento</td><td>Enseada Calma, termômetro de energia, “como estou” no começo</td><td><span class="tag forte">Prática com evidência</span> <span class="tag ensaio">Ensaio clínico</span></td><td>NCAEP 2020; Beaumont 2021</td></tr>
+        <tr><td>Exercício e movimento</td><td>Ferramentas de calma com o corpo (pular, apertar)</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Narrativas sociais e modelagem por vídeo</td><td>Mercado das Histórias e “Histórias Minhas” com fotos reais</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020; Gray</td></tr>
+        <tr><td>Análise de tarefa e encadeamento</td><td>Oficina dos Passos</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Reconhecimento de emoções (Teoria da Mente)</td><td>Praia das Caras</td><td><span class="tag limitada">Evidência limitada</span></td><td>Cochrane 2014; Tanaka 2010</td></tr>
+        <tr><td>Atenção compartilhada e brincar simbólico (JASPER); Modelo Denver (ESDM)</td><td>Clareira do Encontro e a missão diária de brincar</td><td><span class="tag ensaio">Ensaio clínico</span></td><td>Kasari 2006; Dawson 2010</td></tr>
+        <tr><td>Intervenção naturalística (inclui PRT) e interesse da criança</td><td>Escolhas da criança e Mirante dos Tesouros</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Intervenção implementada pelos pais e por pares</td><td>Missões de casa, Guia do Adulto, modo de dois jogadores</td><td><span class="tag forte">Prática com evidência</span></td><td>NCAEP 2020</td></tr>
+        <tr><td>Tecnologia como meio</td><td>O próprio aplicativo</td><td><span class="tag forte">Prática com evidência</span> <span class="tag limitada">Evidência limitada</span></td><td>NCAEP 2020; Grynszpan 2014; Grossard 2017</td></tr>
+        <tr><td>Problema da dupla empatia</td><td>Moradores que também aprendem o jeito da criança; Dicionário do Meu Jeito</td><td><span class="tag ref">Referencial</span></td><td>Milton 2012</td></tr>
+        <tr><td>Stim como autorregulação</td><td>O jogo nunca pune nem corrige stim; o Lume também balança os braços</td><td><span class="tag ref">Referencial</span></td><td>Kapp 2019</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="nota">A lista do NCAEP (Steinbrenner e colegas, 2020) reuniu 972 estudos e chegou a 28 práticas com evidência. Ela tem críticas publicadas (Leaf e colegas, 2021). “Prática com evidência” vale para a prática aplicada por gente treinada, não para este jogo. A meta-análise de Grynszpan e colegas (2014) achou efeito médio de d = 0,47 (intervalo de 0,08 a 0,86) para intervenções com tecnologia em estudos controlados: um efeito real, mas moderado e com margem larga. O jogo em si ainda não tem prova nenhuma e precisa ser testado (ver <a href="#medir">Como saber se funciona</a>).</p>
+</section>
+
+<section id="principios" aria-labelledby="t-principios">
+  <p class="eyebrow">Regras que valem para toda tela</p>
+  <h2 id="t-principios">Princípios de desenho</h2>
+  <ul class="regras">
+    <li><strong>Nada pisca mais de 3 vezes por segundo</strong><span>Critério 2.3.1 das diretrizes de acessibilidade WCAG. A epilepsia é mais frequente em crianças autistas do que na população em geral.</span></li>
+    <li><strong>Não existe perder</strong><span>Sem vidas, sem “fim de jogo”, sem cronômetro correndo, sem som de erro. O erro vira “vamos ver juntos”.</span></li>
+    <li><strong>Tudo avisa antes de mudar</strong><span>Toda troca de tela vem com aviso e timer visual. Botões ficam sempre no mesmo lugar.</span></li>
+    <li><strong>Três canais para cada instrução</strong><span>Pictograma, texto curto e voz humana calma. Legenda sempre ligada; a voz pode ser desligada.</span></li>
+    <li><strong>Linguagem literal</strong><span>Frases curtas, sem ironia e sem expressão figurada, a não ser na fase que ensina justamente isso.</span></li>
+    <li><strong>O perfil sensorial configura o jogo</strong><span>Volume separado para música, efeitos e voz. Modo calmo com cores suaves e menos animação. Nenhum som começa de repente.</span></li>
+    <li><strong>O corpo não pode atrapalhar</strong><span>Alvos de toque grandes (48 pixels ou mais). Todo arrastar tem a alternativa de tocar e tocar de novo.</span></li>
+    <li><strong>A criança pode dizer não</strong><span>“Agora não” é resposta válida e o jogo espera. O botão “Preciso de pausa” fica sempre visível, e usar o botão rende elogio.</span></li>
+    <li><strong>Sessão tem fim</strong><span>Limite diário padrão de 20 minutos, dentro da orientação da Sociedade Brasileira de Pediatria. Sem anúncio, sem compra, sem internet, sem chat.</span></li>
+    <li><strong>O alvo não é parecer menos autista</strong><span>O jogo não força olhar nos olhos, não corrige stim e não premia disfarce. Os alvos são comunicar, entender e ser entendido, ganhar autonomia e sofrer menos.</span></li>
+  </ul>
+</section>
+
+<section id="mundo" aria-labelledby="t-mundo">
+  <p class="eyebrow">Onde o jogo acontece</p>
+  <h2 id="t-mundo">O mundo e o elenco</h2>
+  <p>Numa noite de ventania, as conchas de luz que acendem o farol voaram para todos os cantos da ilha. O Lume, um polvinho que brilha e mora no farol, não consegue buscar as conchas sozinho. A criança passa a cuidar do farol com ele. A cada lugar visitado, ela ajuda um morador, ganha conchas, e o farol fica um pouco mais aceso.</p>
+  <p>Não há vilão. A ventania já passou e ninguém tem culpa. Um antagonista traria medo e disputa, e o jogo quer o contrário: um lugar seguro, onde todo mundo coopera.</p>
+
+  <figure class="mapa">
+    <div class="quadro">
+    <svg viewBox="0 0 720 440" role="img" aria-labelledby="mapa-t mapa-d">
+      <title id="mapa-t">Mapa da Ilha do Farol</title>
+      <desc id="mapa-d">O farol fica no centro da ilha. Sete lugares ficam em volta, cada um ligado ao farol por uma trilha: Mirante dos Tesouros, Praia das Caras, Clareira do Encontro, Enseada Calma, Oficina dos Passos, Vila Conversa e Mercado das Histórias.</desc>
+      <defs>
+        <linearGradient id="feixe-e" x1="1" y1="0" x2="0" y2="0"><stop offset="0" class="fa"/><stop offset="1" class="fb"/></linearGradient>
+        <linearGradient id="feixe-d" x1="0" y1="0" x2="1" y2="0"><stop offset="0" class="fa"/><stop offset="1" class="fb"/></linearGradient>
+      </defs>
+      <rect class="mar" x="0" y="0" width="720" height="440" rx="18"/>
+      <path class="onda" d="M28 42 q12 -8 24 0 t24 0"/>
+      <path class="onda" d="M640 70 q12 -8 24 0 t24 0"/>
+      <path class="onda" d="M26 404 q12 -8 24 0 t24 0"/>
+      <path class="onda" d="M628 408 q12 -8 24 0 t24 0"/>
+      <path class="terra" d="M110 205 C 88 112, 222 42, 360 46 C 520 42, 652 112, 640 222 C 658 332, 540 410, 360 404 C 192 410, 72 318, 110 205 Z"/>
+      <g>
+        <line class="trilha" x1="360" y1="215" x2="360" y2="82"/>
+        <line class="trilha" x1="360" y1="215" x2="182" y2="128"/>
+        <line class="trilha" x1="360" y1="215" x2="538" y2="128"/>
+        <line class="trilha" x1="360" y1="215" x2="134" y2="262"/>
+        <line class="trilha" x1="360" y1="215" x2="586" y2="262"/>
+        <line class="trilha" x1="360" y1="215" x2="240" y2="350"/>
+        <line class="trilha" x1="360" y1="215" x2="480" y2="350"/>
+      </g>
+      <polygon points="348,160 252,134 252,188" fill="url(#feixe-e)"/>
+      <polygon points="372,160 468,134 468,188" fill="url(#feixe-d)"/>
+      <rect class="escuro" x="336" y="260" width="48" height="8" rx="3"/>
+      <path class="torre" d="M344 262 L376 262 L369 172 L351 172 Z"/>
+      <path class="faixa" d="M349.1 196 L370.9 196 L371.8 208 L348.2 208 Z"/>
+      <path class="faixa" d="M346.8 226 L373.2 226 L374.1 238 L345.9 238 Z"/>
+      <rect class="lanterna" x="348" y="154" width="24" height="18" rx="3"/>
+      <path class="escuro" d="M343 156 L377 156 L360 138 Z"/>
+      <rect class="etiqueta" x="282" y="274" width="156" height="40" rx="8"/>
+      <text class="rotulo" x="360" y="291" text-anchor="middle">Casa do Farol</text>
+      <text class="sub" x="360" y="307" text-anchor="middle">rotina e previsibilidade</text>
+
+      <circle class="ponto" cx="360" cy="70" r="10"/>
+      <text class="rotulo" x="380" y="68">Mirante dos Tesouros</text>
+      <text class="sub" x="380" y="84">o interesse da criança</text>
+
+      <circle class="ponto" cx="182" cy="128" r="10"/>
+      <text class="rotulo" x="182" y="158" text-anchor="middle">Praia das Caras</text>
+      <text class="sub" x="182" y="174" text-anchor="middle">sentimentos</text>
+
+      <circle class="ponto" cx="538" cy="128" r="10"/>
+      <text class="rotulo" x="538" y="158" text-anchor="middle">Clareira do Encontro</text>
+      <text class="sub" x="538" y="174" text-anchor="middle">brincar junto</text>
+
+      <circle class="ponto" cx="134" cy="262" r="10"/>
+      <text class="rotulo" x="134" y="292" text-anchor="middle">Enseada Calma</text>
+      <text class="sub" x="134" y="308" text-anchor="middle">regular a energia</text>
+
+      <circle class="ponto" cx="586" cy="262" r="10"/>
+      <text class="rotulo" x="586" y="292" text-anchor="middle">Oficina dos Passos</text>
+      <text class="sub" x="586" y="308" text-anchor="middle">autonomia</text>
+
+      <circle class="ponto" cx="240" cy="350" r="10"/>
+      <text class="rotulo" x="240" y="380" text-anchor="middle">Vila Conversa</text>
+      <text class="sub" x="240" y="396" text-anchor="middle">pedir e recusar</text>
+
+      <circle class="ponto" cx="480" cy="350" r="10"/>
+      <text class="rotulo" x="480" y="380" text-anchor="middle">Mercado das Histórias</text>
+      <text class="sub" x="480" y="396" text-anchor="middle">situações novas</text>
+    </svg>
+    </div>
+    <figcaption>Toda sessão começa no farol, com a agenda do dia, e vai para um lugar só. As trilhas saem todas do centro: a rotina é o ponto fixo de onde a criança parte e para onde volta.</figcaption>
+  </figure>
+
+  <h3>O elenco</h3>
+  <div class="elenco">
+    <div class="destaque"><strong>A criança</strong><span>Monta o próprio avatar: cabelo, pele, roupa, óculos, fone de ouvido, cadeira de rodas. O jogo nunca pergunta gênero.</span></div>
+    <div class="destaque"><strong>Lume, o polvinho</strong><span>Companheiro e modelo. A cor dele muda com o que sente (a cor é um apoio e o adulto pode trocar). Balança os braços quando está feliz e cobre os olhos quando tem luz demais. Às vezes erra de propósito e mostra como pede ajuda.</span></div>
+  </div>
+  <h3>Os moradores</h3>
+  <div class="elenco moradores">
+    <div><strong>Tuca, a tartaruga</strong><span>Faz tudo devagar e precisa de tempo para responder. Com ela se treina esperar a vez e dar tempo ao outro.</span></div>
+    <div><strong>Gigi, a gaivota</strong><span>Adora barulho e fala alto. Quando alguém pede, ela fala mais baixo: o ajuste vale para os dois lados.</span></div>
+    <div><strong>Caco, o caranguejo</strong><span>Usa fone de ouvido, anda de lado e faz as coisas do jeito dele. Ninguém tenta endireitar o Caco.</span></div>
+    <div><strong>Fifi, a foca</strong><span>Ama a rotina e fica chateada com mudança. Com ela a criança conhece o Cartão Surpresa.</span></div>
+    <div><strong>Bolota, o peixe-balão</strong><span>Incha quando fica bravo. Com ele a criança treina as ferramentas de calma.</span></div>
+  </div>
+</section>
+
+<section id="sessao" aria-labelledby="t-sessao">
+  <p class="eyebrow">O ciclo que se repete</p>
+  <h2 id="t-sessao">Como é uma sessão</h2>
+  <p>Toda sessão tem a mesma forma, para a criança saber o que vem. Muda só o lugar visitado na parte do meio.</p>
+  <ol class="sessao">
+    <li><span class="min">1 min</span><strong>Chegada</strong><p>A agenda da sessão aparece em 4 pictogramas. O Lume diz o que vai acontecer.</p></li>
+    <li><span class="min">1 min</span><strong>Como estou</strong><p>A criança marca a própria energia no termômetro. Se marcar “fervendo”, a sessão vai direto para a Enseada Calma.</p></li>
+    <li><span class="min">1 a 2 min</span><strong>Aquecimento</strong><p>Duas tarefas que a criança já domina, para chegar confiante na tarefa nova.</p></li>
+    <li><span class="min">5 a 8 min</span><strong>Missão do dia</strong><p>Um lugar da ilha, com o alvo definido pelo terapeuta.</p></li>
+    <li><span class="min">2 min</span><strong>Tesouro</strong><p>Tempo livre no Mirante, com o interesse da criança. Aqui se gastam as conchas.</p></li>
+    <li><span class="min">1 min</span><strong>Tchau</strong><p>Carta da missão de casa, prévia da próxima vez e o mesmo ritual de despedida todo dia.</p></li>
+  </ol>
+  <p>O ritual de saída cuida da transição, que costuma ser o momento mais difícil: “Agora a tela vai dormir. Agora é hora de…” e aparece o pictograma da próxima atividade fora da tela (lanche, banho, brincar), escolhido antes pelo adulto.</p>
+</section>
+
+<section id="ajuda" aria-labelledby="t-ajuda">
+  <p class="eyebrow">Como o jogo ensina</p>
+  <h2 id="t-ajuda">Ajuda e recompensa</h2>
+  <h3>A escada de ajuda</h3>
+  <p>Quando a criança não responde, o jogo sobe um degrau de ajuda por vez. A ideia é dar só a ajuda necessária e ir tirando aos poucos.</p>
+  <ol class="escada">
+    <li><span class="grau">Degrau 0</span><span>A criança responde sozinha.</span><span class="premio">2 conchas</span></li>
+    <li><span class="grau">Degrau 1</span><span>Espera. Nada acontece por 3 segundos (o adulto ajusta de 0 a 10). Dá tempo de processar sem pressa.</span><span class="premio"></span></li>
+    <li><span class="grau">Degrau 2</span><span>Pista visual. As opções erradas ficam mais apagadas.</span><span class="premio"></span></li>
+    <li><span class="grau">Degrau 3</span><span>Modelo. O Lume faz primeiro e a criança repete.</span><span class="premio"></span></li>
+    <li><span class="grau">Degrau 4</span><span>Ajuda total. Só a resposta certa brilha e a criança toca.</span><span class="premio">1 concha</span></li>
+  </ol>
+  <ul class="lista">
+    <li><b>Tirar a ajuda aos poucos.</b> Na sessão seguinte, o jogo começa um degrau abaixo do que a criança precisou, para ela não depender da dica.</li>
+    <li><b>Aprender sem errar.</b> Depois de um erro, o jogo não repete o mesmo item em seguida: passa para um fácil e volta ao difícil mais tarde.</li>
+    <li><b>Faixa certa de dificuldade.</b> O jogo ajusta os itens para a criança acertar entre 70% e 85% das vezes: difícil o bastante para aprender, fácil o bastante para não frustrar.</li>
+    <li><b>Quando conta como aprendido.</b> 80% de acertos sozinha em 2 sessões seguidas, e depois passar no degrau seguinte de generalização (foto real, foto da família, missão).</li>
+  </ul>
+
+  <h3>As recompensas</h3>
+  <ul class="lista">
+    <li><b>Conchas de luz.</b> Duas quando a criança faz sozinha, uma quando precisou de ajuda. Nunca se perde concha.</li>
+    <li><b>O farol acende aos poucos.</b> O progresso fica sempre à vista, no centro do mapa.</li>
+    <li><b>Elogio que nomeia a ação.</b> “Você pediu pausa. Isso foi muito bom.” em vez de só “muito bem”.</li>
+    <li><b>Comemoração escolhida pela criança.</b> Brilho quietinho, dancinha do Lume ou som, conforme o perfil sensorial.</li>
+    <li><b>Conchas viram peças do museu.</b> No Mirante, a criança troca conchas por peças do tema que ama.</li>
+    <li><b>Nada de sorteio.</b> Toda recompensa é previsível. Sem prêmio aleatório, sem sequência diária que “quebra”, sem notificação chamando a criança de volta.</li>
+  </ul>
+</section>
+
+<section id="lugares" aria-labelledby="t-lugares">
+  <p class="eyebrow">Os módulos do jogo</p>
+  <h2 id="t-lugares">Os lugares da ilha</h2>
+  <p>São oito lugares. Cada um tem um objetivo terapêutico, três níveis, uma cena de exemplo, uma missão de casa e o que o jogo registra para o adulto e o terapeuta.</p>
+
+  <article class="lugar" id="farol">
+    <header><p class="habil">Rotina e previsibilidade</p><h3>Casa do Farol</h3></header>
+    <dl>
+      <div><dt>Para quê</dt><dd>Diminuir a ansiedade com o que vem pela frente e treinar a flexibilidade diante de mudança.</dd></div>
+      <div><dt>Base</dt><dd>Apoios visuais, ensino estruturado, intervenção baseada em antecedentes.</dd></div>
+      <div><dt>Como se joga</dt><dd>A criança monta o dia do Lume com pictogramas (acordar, escovar, café, escola, parque, banho, dormir). Depois aparece o Cartão Surpresa, que tem sempre a mesma cor e o mesmo símbolo: a mudança ganha uma cara conhecida. A criança escolhe o que entra no lugar entre duas opções.</dd></div>
+      <div><dt>Níveis</dt><dd><ol class="niveis">
+        <li><b>Nível 1</b><span>Ordenar 3 cartões do dia do Lume.</span></li>
+        <li><b>Nível 2</b><span>Ordenar 5 cartões e aceitar um Cartão Surpresa com troca oferecida.</span></li>
+        <li><b>Nível 3</b><span>Montar a própria agenda real, com fotos da casa, e lidar com duas surpresas.</span></li>
+      </ol></dd></div>
+    </dl>
+    <div class="cena" aria-label="Cena de exemplo">
+      <p><span class="quem">Lume</span><span>Hoje eu vou ao parque. Depois eu vou tomar banho.</span></p>
+      <p><span class="quem"></span><span class="rub">O Cartão Surpresa vira devagar, sem som alto.</span></p>
+      <p><span class="quem">Lume</span><span>Ih. Choveu. O parque fica para amanhã.</span></p>
+      <p><span class="quem">Lume</span><span>Eu fiquei chateado. Minha cor ficou azul.</span></p>
+      <p><span class="quem">Lume</span><span>O que eu posso fazer no lugar? Desenhar ou montar bloquinho?</span></p>
+      <p><span class="quem"></span><span class="rub">A criança escolhe uma das duas.</span></p>
+      <p><span class="quem">Lume</span><span>Boa escolha. A mudança chegou e a gente achou outro jeito.</span></p>
+    </div>
+    <div class="missao"><h4>Missão de casa</h4><p>O jogo gera a agenda da manhã para imprimir. A família usa por 3 dias. Uma vez na semana, o adulto usa de propósito um Cartão Surpresa pequeno (trocar o copo, inverter duas atividades).</p></div>
+    <dl><div><dt>O jogo registra</dt><dd>Tempo para montar a agenda e o que a criança fez com a surpresa (escolheu, pediu pausa, recusou).</dd></div></dl>
+  </article>
+
+  <article class="lugar" id="praia">
+    <header><p class="habil">Sentimentos</p><h3>Praia das Caras</h3></header>
+    <dl>
+      <div><dt>Para quê</dt><dd>Perceber o que sente no corpo, dar nome a isso e reconhecer o sentimento no outro.</dd></div>
+      <div><dt>Base</dt><dd>Treino de reconhecimento de emoções (efeito no treino, segundo a Cochrane de 2014), treino de rosto do Let’s Face It (Tanaka e colegas, 2010), percepção do corpo por dentro (interocepção), exemplos variados.</dd></div>
+      <div><dt>Como se joga</dt><dd>Os moradores chegam à praia com uma cara e uma situação. A criança liga a cara ao nome do sentimento e depois ao motivo. Em outra fase, o Lume mostra o corpo por dentro (coração rápido, barriga apertada, mão fechada) e a criança marca onde sente.</dd></div>
+      <div><dt>Níveis</dt><dd><ol class="niveis">
+        <li><b>Nível 1</b><span>Quatro sentimentos básicos (alegria, tristeza, raiva, medo) em desenho, com a cor do Lume junto.</span></li>
+        <li><b>Nível 2</b><span>Fotos de rostos reais, tom de voz e postura do corpo. Entram calma, surpresa, nojo e vergonha.</span></li>
+        <li><b>Nível 3</b><span>Prever o sentimento pela situação (“O Caco perdeu a concha favorita. Como ele se sente?”) e sentimentos misturados (“feliz e com medo no primeiro dia de aula”).</span></li>
+      </ol></dd></div>
+      <div><dt>Dicionário do Meu Jeito</dt><dd>A criança ensina ao Lume como <em>ela</em> mostra cada sentimento (“quando estou feliz eu pulo”, “quando estou bravo eu fico quieto”), com desenho, foto ou áudio. O adulto lê o dicionário no painel. É aqui que entra a dupla empatia (Milton, 2012): a meta é os dois lados se entenderem, não a criança aprender a cara “certa”.</dd></div>
+    </dl>
+    <div class="cena" aria-label="Cena de exemplo">
+      <p><span class="quem">Narração</span><span>Chegou a Tuca.</span></p>
+      <p><span class="quem">Tuca</span><span>Meu… castelo… caiu.</span></p>
+      <p><span class="quem">Lume</span><span>Olha a boca da Tuca. Olha os olhos. Como ela está?</span></p>
+      <p><span class="quem"></span><span class="rub">Quatro opções com pictograma e voz: alegre, triste, com raiva, com medo.</span></p>
+      <div class="ramo">
+        <p><span class="quem">Se acertar</span><span>Isso. A Tuca está triste porque o castelo caiu.</span></p>
+        <p><span class="quem">Se errar</span><span>Vamos ver juntos. A boca está para baixo. Os olhos estão molhados. É tristeza.</span></p>
+      </div>
+    </div>
+    <div class="missao"><h4>Missão de casa</h4><p>Detetive dos sentimentos: no jantar, cada pessoa da casa mostra a carta do sentimento do dia, inclusive os adultos.</p></div>
+    <dl><div><dt>O jogo registra</dt><dd>Acertos por sentimento e por tipo de estímulo (desenho, foto, voz) e as marcações no mapa do corpo.</dd></div></dl>
+  </article>
+
+  <article class="lugar" id="enseada">
+    <header><p class="habil">Regular a energia</p><h3>Enseada Calma</h3></header>
+    <dl>
+      <div><dt>Para quê</dt><dd>Perceber a própria energia subindo e escolher o que ajuda a baixar.</dd></div>
+      <div><dt>Base</dt><dd>Estratégias cognitivo-comportamentais adaptadas (como no Secret Agent Society), autogerenciamento, exercício e movimento.</dd></div>
+      <div><dt>Como se joga</dt><dd>O Bolota tem um termômetro de energia com 5 níveis (1 é muito calmo, 5 é fervendo). Quando ele incha, a criança abre a Caixa de Ferramentas e testa: respiração da onda (a onda sobe em 4 tempos e desce em 6), apertar (a tela ou uma massinha de verdade), movimento (pular 10 vezes com o Lume), silêncio (a tela escurece e fica só o mar), cantinho calmo, pedir ajuda. Cada ferramenta que funcionou vai para a “Minha Caixa de Calma”.</dd></div>
+      <div><dt>Regra da terapia cognitivo-comportamental</dt><dd>A ferramenta se treina com a criança calma, para estar pronta quando ela precisar. A Enseada nunca é castigo e nunca é “ir para o cantinho do pensamento”.</dd></div>
+      <div><dt>Níveis</dt><dd><ol class="niveis">
+        <li><b>Nível 1</b><span>Ajudar o Bolota a desinchar com uma ferramenta.</span></li>
+        <li><b>Nível 2</b><span>Ligar situação a nível (“Barulho alto no mercado. Quanto o Bolota fica?”) e escolher a ferramenta.</span></li>
+        <li><b>Nível 3</b><span>Montar o plano “se… então…”: “Se eu ficar no 4, eu vou ___”.</span></li>
+      </ol></dd></div>
+    </dl>
+    <div class="cena" aria-label="Cena de exemplo">
+      <p><span class="quem">Bolota</span><span>A Gigi gritou perto de mim. Eu estou no 4.</span></p>
+      <p><span class="quem"></span><span class="rub">Ele incha devagar. Nada treme, nada pisca.</span></p>
+      <p><span class="quem">Lume</span><span>Vamos ajudar o Bolota? Qual ferramenta a gente tenta?</span></p>
+      <p><span class="quem"></span><span class="rub">A criança escolhe a onda.</span></p>
+      <p><span class="quem">Lume</span><span>Respira com a onda. A onda sobe… A onda desce…</span></p>
+      <p><span class="quem">Bolota</span><span>Agora eu estou no 2. Obrigado.</span></p>
+    </div>
+    <div class="missao"><h4>Missão de casa</h4><p>Fazer a respiração da onda uma vez por dia num momento calmo, com o adulto fazendo junto. Colar o termômetro impresso na geladeira.</p></div>
+    <dl><div><dt>O jogo registra</dt><dd>Os “como estou” de cada dia (a série ao longo das semanas), as ferramentas testadas e as que a criança marcou como úteis, e o uso do botão de pausa.</dd></div></dl>
+  </article>
+
+  <article class="lugar" id="vila">
+    <header><p class="habil">Pedir e recusar</p><h3>Vila Conversa</h3></header>
+    <dl>
+      <div><dt>Para quê</dt><dd>Pedir o que quer, pedir ajuda, pedir pausa, recusar e pedir ajuste, de um jeito que funcione melhor e mais rápido do que o choro ou a crise.</dd></div>
+      <div><dt>Base</dt><dd>Treino de comunicação funcional, comunicação alternativa e aumentativa (o NCAEP inclui o PECS nela), intervenção naturalística, atraso de tempo.</dd></div>
+      <div><dt>Como se joga</dt><dd>A vila tem lojinhas e os moradores têm o que a criança precisa para achar conchas. Ela pede tocando e “entregando” pictogramas ao morador. Se a criança fala, o adulto confirma no botão dele que ela falou: reconhecimento de voz erra muito com fala de criança e frustraria.</dd></div>
+      <div><dt>Regra de ouro</dt><dd>Todo pedido claro funciona na hora. No começo, qualquer tentativa de pedir já é atendida; com o tempo o jogo pede um pouco mais.</dd></div>
+      <div><dt>Níveis</dt><dd><ol class="niveis">
+        <li><b>Nível 1</b><span>Pedido com um pictograma, entregando a figura.</span></li>
+        <li><b>Nível 2</b><span>Frase de 2 ou 3 pictogramas (“eu quero” + “concha” + “azul”).</span></li>
+        <li><b>Nível 3</b><span>Iniciar conversa, esperar a vez da Tuca, recusar (“não, obrigado”) e pedir ajuste (“fala mais baixo, por favor”).</span></li>
+      </ol></dd></div>
+    </dl>
+    <div class="cena" aria-label="Cena de exemplo">
+      <p><span class="quem">Gigi</span><span>OI! QUER UMA CONCHA?</span></p>
+      <p><span class="quem"></span><span class="rub">A fala aparece em letra grande. O volume real continua baixo. Surge o pictograma “mais baixo”.</span></p>
+      <p><span class="quem"></span><span class="rub">A criança toca em “mais baixo, por favor”.</span></p>
+      <p><span class="quem">Gigi</span><span>Desculpa. Assim está bom?</span></p>
+      <p><span class="quem">Lume</span><span>Você pediu e a Gigi mudou. Pedir funciona.</span></p>
+    </div>
+    <div class="missao"><h4>Missão de casa</h4><p>Tentação boa: o adulto deixa o brinquedo preferido à vista e fora do alcance e espera 5 segundos antes de ajudar. Qualquer pedido (apontar, pictograma, palavra) é atendido na hora. O cartão impresso de “pausa” também passa a valer em casa, e sempre funciona.</p></div>
+    <dl><div><dt>O jogo registra</dt><dd>Pedidos por tipo (quero, ajuda, pausa, não, ajuste), degrau de ajuda usado e tamanho da frase.</dd></div></dl>
+  </article>
+
+  <article class="lugar" id="mercado">
+    <header><p class="habil">Situações novas</p><h3>Mercado das Histórias</h3></header>
+    <dl>
+      <div><dt>Para quê</dt><dd>Preparar a criança para lugares e eventos que assustam: dentista, cabeleireiro, festa, fila, vacina, primeiro dia de aula, viagem.</dd></div>
+      <div><dt>Base</dt><dd>Narrativas sociais (as Histórias Sociais de Carol Gray) e modelagem por vídeo.</dd></div>
+      <div><dt>Como se joga</dt><dd>Na barraca de histórias, o Lume vive a situação numa animação curta, de 1 a 2 minutos. Depois a criança joga a mesma cena, escolhendo o que o Lume faz em cada momento.</dd></div>
+      <div><dt>Histórias Minhas</dt><dd>O adulto monta a história com fotos reais do lugar (a fachada do dentista, a cadeira, a sala de espera) a partir de um modelo pronto. O modelo segue a regra de Carol Gray: mais frases que descrevem do que frases que mandam, primeira pessoa, e nenhuma promessa sobre o que não se controla (“às vezes a espera é longa”).</dd></div>
+      <div><dt>Níveis</dt><dd><ol class="niveis">
+        <li><b>Nível 1</b><span>Assistir e responder duas perguntas simples (“Onde o Lume sentou?”).</span></li>
+        <li><b>Nível 2</b><span>Jogar a cena escolhendo as ações do Lume.</span></li>
+        <li><b>Nível 3</b><span>Lidar com um imprevisto dentro da cena (a dentista atrasou) usando as ferramentas da Enseada e os pedidos da Vila.</span></li>
+      </ol></dd></div>
+    </dl>
+    <div class="cena" aria-label="História de exemplo: cortar o cabelo">
+      <p><span class="quem">História</span><span>Às vezes o meu cabelo fica comprido.</span></p>
+      <p><span class="quem"></span><span>O salão tem uma cadeira alta e um espelho grande.</span></p>
+      <p><span class="quem"></span><span>A tesoura faz um barulho: tic, tic.</span></p>
+      <p><span class="quem"></span><span>Muitas crianças acham esse barulho estranho. Eu posso usar meu fone.</span></p>
+      <p><span class="quem"></span><span>Se eu precisar de pausa, eu mostro o cartão da pausa.</span></p>
+      <p><span class="quem"></span><span>Quando acaba, meu cabelo fica curto e eu volto para casa.</span></p>
+    </div>
+    <div class="missao"><h4>Missão de casa</h4><p>Ler a história com o adulto na véspera e no dia. Depois, marcar como foi com uma de três carinhas, para ajustar a história da próxima vez.</p></div>
+    <dl><div><dt>O jogo registra</dt><dd>Histórias lidas, respostas dentro da cena e o registro do adulto sobre como foi a situação real.</dd></div></dl>
+  </article>
+
+  <article class="lugar" id="oficina">
+    <header><p class="habil">Autonomia</p><h3>Oficina dos Passos</h3></header>
+    <dl>
+      <div><dt>Para quê</dt><dd>Fazer sozinho as tarefas do dia a dia, um passo de cada vez.</dd></div>
+      <div><dt>Base</dt><dd>Análise de tarefa, encadeamento, apoios visuais, autogerenciamento.</dd></div>
+      <div><dt>Como se joga</dt><dd>Cada morador precisa de ajuda numa tarefa: lavar as mãos, escovar os dentes, vestir a roupa, arrumar a mochila, guardar o brinquedo. A criança põe os passos em ordem e depois “faz” cada um tocando. No encadeamento de trás para frente, o jogo faz todos os passos menos o último e a criança termina (o fim, a parte mais gostosa, fica com ela). Depois ela faz os dois últimos, e assim por diante.</dd></div>
+      <div><dt>Níveis</dt><dd><ol class="niveis">
+        <li><b>Nível 1</b><span>Tarefa de 3 passos, com o último feito pela criança.</span></li>
+        <li><b>Nível 2</b><span>Tarefas de 5 a 7 passos.</span></li>
+        <li><b>Nível 3</b><span>Conferir a própria lista (“Esqueci algum passo?”) e se corrigir.</span></li>
+      </ol></dd></div>
+    </dl>
+    <div class="cena" aria-label="Cena de exemplo">
+      <p><span class="quem">Caco</span><span>Eu quero lavar as garras. Mas eu esqueço a ordem.</span></p>
+      <p><span class="quem"></span><span class="rub">Aparecem três cartões: abrir a torneira, passar sabão, secar. O último já está no lugar.</span></p>
+      <p><span class="quem">Lume</span><span>O que vem primeiro?</span></p>
+      <p><span class="quem"></span><span class="rub">A criança arrasta ou toca “abrir a torneira”, depois “passar sabão”.</span></p>
+      <p><span class="quem">Caco</span><span>Garras limpas! Você lembrou a ordem inteira.</span></p>
+    </div>
+    <div class="missao"><h4>Missão de casa</h4><p>O jogo gera a lista visual do passo a passo para colar no banheiro. A criança marca cada passo por uma semana.</p></div>
+    <dl><div><dt>O jogo registra</dt><dd>Passos feitos sem ajuda, por tarefa, ao longo das semanas.</dd></div></dl>
+  </article>
+
+  <article class="lugar" id="clareira">
+    <header><p class="habil">Brincar junto</p><h3>Clareira do Encontro</h3></header>
+    <dl>
+      <div><dt>Para quê</dt><dd>Dividir a atenção com outra pessoa (mostrar, apontar, seguir o apontar), revezar a vez e brincar de faz de conta.</dd></div>
+      <div><dt>Base</dt><dd>JASPER (Kasari e colegas, 2006) e Modelo Denver de Intervenção Precoce (Dawson e colegas, 2010): intervenções em que o adulto segue o interesse da criança. Intervenção por pares, mais adiante.</dd></div>
+      <div><dt>Como se joga</dt><dd>Modo de dois jogadores no mesmo tablet, lado a lado. Criança e adulto constroem juntos um barco para o Lume. Cada um tem peças que o outro precisa, então é preciso mostrar, apontar e pedir. Um marcador visual mostra de quem é a vez. Ninguém ganha: o barco fica pronto para os dois.</dd></div>
+      <div><dt>Dicas ao adulto na própria tela</dt><dd>Siga o que a criança escolheu. Imite o que ela fizer. Comente em frases curtas (“barco azul!”). Espere antes de ajudar. Aponte e olhe para a peça antes de pedir.</dd></div>
+      <div><dt>Níveis</dt><dd><ol class="niveis">
+        <li><b>Nível 1</b><span>Revezar a vez com o marcador.</span></li>
+        <li><b>Nível 2</b><span>Seguir o apontar do adulto e apontar para mostrar algo.</span></li>
+        <li><b>Nível 3</b><span>Faz de conta: o barco viaja e a criança inventa para onde. Depois, jogar com irmão ou colega.</span></li>
+      </ol></dd></div>
+    </dl>
+    <div class="missao"><h4>Missão de casa (a mais importante do jogo)</h4><p>Dez minutos por dia de “brincar do jeito dela”, sem tela. O adulto senta no chão, deixa a criança escolher, imita, comenta e não faz pergunta de prova (“que cor é essa?”). As provas do JASPER e do Modelo Denver vêm do adulto presente; a tela só prepara o encontro.</p></div>
+    <dl><div><dt>O jogo registra</dt><dd>Revezamentos completos e os apontares iniciados pela criança (o adulto marca num botão).</dd></div></dl>
+  </article>
+
+  <article class="lugar" id="mirante">
+    <header><p class="habil">O interesse da criança</p><h3>Mirante dos Tesouros</h3></header>
+    <dl>
+      <div><dt>Para quê</dt><dd>Usar o interesse forte da criança (dinossauros, trens, planetas, letras, bandeiras) como motivação e como porta de conversa.</dd></div>
+      <div><dt>Base</dt><dd>Intervenção naturalística, incluindo o PRT: escolha da criança e recompensa natural. Olhar de força, não de falta.</dd></div>
+      <div><dt>Como se joga</dt><dd>O Mirante guarda um museu do tema que a criança escolheu, e as conchas compram peças novas. Na brincadeira “Mostra e conta”, a criança escolhe uma peça e mostra ao adulto ou ao Lume, que faz uma pergunta curiosa. É conversa sobre o que ela ama, com vez de falar e vez de ouvir.</dd></div>
+      <div><dt>Regra</dt><dd>O Mirante nunca é bloqueado como castigo. Ele é parte fixa de toda sessão.</dd></div>
+    </dl>
+    <div class="missao"><h4>Missão de casa</h4><p>A criança ensina uma coisa do tema dela a alguém da família, e essa pessoa faz uma pergunta de volta.</p></div>
+    <dl><div><dt>O jogo registra</dt><dd>O tema escolhido e as falas iniciadas pela criança no “Mostra e conta”.</dd></div></dl>
+  </article>
+</section>
+
+<section id="historia" aria-labelledby="t-historia">
+  <p class="eyebrow">O fio que liga as sessões</p>
+  <h2 id="t-historia">A história</h2>
+  <ul class="lista">
+    <li><b>Prólogo, “A noite da ventania”.</b> Primeira sessão: conhecer o Lume, montar o avatar, preencher o “Meu Jeito” com o adulto e achar a primeira concha no próprio farol.</li>
+    <li><b>Um capítulo por lugar.</b> O capítulo termina quando a criança ajuda três moradores. O farol ganha um anel de luz.</li>
+    <li><b>Final, “A Festa da Luz”.</b> O farol acende inteiro e a criança planeja a festa: luz forte ou suave, som alto, baixo ou nenhum, quantos convidados, abraço ou só tchau com a mão. Os moradores montam o Dicionário da Ilha, em que cada um explica o próprio jeito, a criança também. A mensagem final: aqui todo mundo aprendeu o jeito de todo mundo.</li>
+    <li><b>Depois do final.</b> A ilha continua em modo de manutenção, com missões novas e sessões menos frequentes. O terapeuta pode abrir alvos novos.</li>
+  </ul>
+
+  <h3>Cena de abertura</h3>
+  <div class="cena" aria-label="Roteiro da cena de abertura">
+    <p><span class="quem">Cena 1</span><span class="rub">A ilha ao amanhecer. Mar parado. Som de ondas bem baixo, que pode ser desligado. Sem música.</span></p>
+    <p><span class="quem">Narração</span><span>Esta é a Ilha do Farol.</span></p>
+    <p><span class="quem"></span><span class="rub">O farol aparece apagado. Um polvinho laranja claro espia de trás da porta.</span></p>
+    <p><span class="quem">Lume</span><span>Oi. Eu sou o Lume. Eu moro no farol.</span></p>
+    <p><span class="quem">Lume</span><span>Ontem à noite teve uma ventania.</span></p>
+    <p><span class="quem"></span><span class="rub">Animação lenta: conchinhas brilhantes voando para longe. Nada pisca.</span></p>
+    <p><span class="quem">Lume</span><span>As conchas de luz voaram. Sem elas, o farol fica apagado.</span></p>
+    <p><span class="quem">Lume</span><span>Eu fiquei triste. Quando eu fico triste, eu fico azul.</span></p>
+    <p><span class="quem">Lume</span><span>Você quer me ajudar a achar as conchas?</span></p>
+    <p><span class="quem"></span><span class="rub">Dois botões grandes, com pictograma e voz: SIM e AGORA NÃO.</span></p>
+    <div class="ramo">
+      <p><span class="quem">Agora não</span><span>Tudo bem. Eu espero. Quando você quiser, toca no farol. <span class="rub">A tela fica parada no farol e no mar. Nada mais acontece até a criança tocar.</span></span></p>
+      <p><span class="quem">Sim</span><span>Oba! Quando eu fico feliz, eu balanço os braços. Primeiro, vamos fazer você. <span class="rub">Abre a montagem do avatar.</span></span></p>
+    </div>
+    <p><span class="quem">Cena 2</span><span class="rub">Depois do avatar, o “Meu Jeito”, feito com o adulto: sons, luzes, toque.</span></p>
+    <p><span class="quem">Lume</span><span>Cada um sente o mundo de um jeito. Eu não gosto de luz forte. E você?</span></p>
+    <p><span class="quem"></span><span class="rub">Perguntas com três carinhas: gosto, tanto faz, não gosto. As respostas ajustam volume, brilho e animações.</span></p>
+    <p><span class="quem">Cena 3</span><span class="rub">A primeira concha está no degrau do farol, bem à vista.</span></p>
+    <p><span class="quem">Lume</span><span>Olha! Uma concha! Toca nela.</span></p>
+    <p><span class="quem"></span><span class="rub">A concha voa para o farol, que ganha um pontinho de luz.</span></p>
+    <p><span class="quem">Lume</span><span>Você achou a primeira concha. O farol acendeu um pouquinho.</span></p>
+    <p><span class="quem">Lume</span><span>Da próxima vez, a gente vai montar o meu dia na Casa do Farol.</span></p>
+    <p><span class="quem"></span><span class="rub">Ritual de tchau: o Lume acende a luz e acena com dois braços.</span></p>
+    <p><span class="quem">Lume</span><span>Tchau! Agora a tela vai dormir. Agora é hora de… <span class="rub">pictograma escolhido pelo adulto.</span></span></p>
+  </div>
+</section>
+
+<section id="perfis" aria-labelledby="t-perfis">
+  <p class="eyebrow">Um jogo, três jeitos de jogar</p>
+  <h2 id="t-perfis">Perfis de suporte</h2>
+  <p>Quem escolhe o perfil é o profissional, pela necessidade da criança, e não pela idade. As idades abaixo são só o caso mais comum.</p>
+  <div class="elenco">
+    <div><strong>Perfil A · mais suporte</strong><span>Pouca ou nenhuma fala, em geral de 4 a 6 anos. Só pictograma e voz, uma instrução por vez, adulto sempre junto, sessões de 5 a 8 minutos. Prioridade: Vila Conversa (pedir e pausa), Casa do Farol, Enseada Calma e Clareira do Encontro.</span></div>
+    <div><strong>Perfil B · suporte moderado</strong><span>Fala em frases curtas. Todos os lugares, nos níveis 1 e 2.</span></div>
+    <div><strong>Perfil C · suporte leve</strong><span>Fala fluente, em geral de 7 a 10 anos. Níveis 2 e 3, com mais peso no nível 3 da Praia das Caras, imprevistos no Mercado das Histórias, pedidos de ajuste e resolução de problemas sociais. É o público parecido com o do Secret Agent Society.</span></div>
+  </div>
+</section>
+
+<section id="adulto" aria-labelledby="t-adulto">
+  <p class="eyebrow">Quem joga junto</p>
+  <h2 id="t-adulto">O papel do adulto</h2>
+  <h3>Guia do Adulto: cinco regras</h3>
+  <ol class="lista">
+    <li>Espere 5 segundos antes de ajudar.</li>
+    <li>Siga o interesse da criança.</li>
+    <li>Elogie a ação: “você pediu ajuda”, e não só “muito bem”.</li>
+    <li>Nunca force olhar nos olhos e nunca interrompa o stim.</li>
+    <li>Se a criança se desregular, pare. O jogo espera; a relação vem primeiro.</li>
+  </ol>
+  <h3>Painel do adulto, com trava</h3>
+  <ul class="lista">
+    <li>Metas do plano terapêutico: o terapeuta escolhe os alvos e os níveis.</li>
+    <li>Fotos para as “Histórias Minhas” e para os rostos da família.</li>
+    <li>Cartas de missão, agenda visual e listas de passos para imprimir.</li>
+    <li>Relatório semanal simples: o que ficou fácil, o que ainda precisa de ajuda, os “como estou” da semana e as missões feitas.</li>
+    <li>Configuração sensorial, tempo de espera da escada de ajuda e limite diário.</li>
+  </ul>
+  <h3>Preparação dos pais</h3>
+  <p>No Secret Agent Society, os pais tiveram um webinário inicial de 150 minutos e acompanhamento online semanal de 30 minutos. O mesmo desenho vale aqui: um vídeo curto por lugar da ilha e uma conversa semanal de 20 a 30 minutos com o terapeuta durante as 12 semanas.</p>
+</section>
+
+<section id="programa" aria-labelledby="t-programa">
+  <p class="eyebrow">A ordem sugerida</p>
+  <h2 id="t-programa">Programa de 12 semanas</h2>
+  <p>Primeiro vem a segurança (prever, se acalmar, pedir pausa), depois o resto. Criança em alerta não aprende. O terapeuta pode mudar a ordem conforme as metas.</p>
+  <ol class="programa">
+    <li><b>Semana 1</b><span>Prólogo, Casa do Farol e Mirante. O botão de pausa é ensinado no primeiro dia.</span></li>
+    <li><b>Semanas 2 e 3</b><span>Enseada Calma, com o Cartão Surpresa da Casa do Farol.</span></li>
+    <li><b>Semanas 4 e 5</b><span>Vila Conversa.</span></li>
+    <li><b>Semanas 6 e 7</b><span>Praia das Caras.</span></li>
+    <li><b>Semana 8</b><span>Oficina dos Passos.</span></li>
+    <li><b>Semanas 9 e 10</b><span>Mercado das Histórias, com uma situação real marcada na agenda (corte de cabelo, dentista).</span></li>
+    <li><b>Semana 11</b><span>Revisão e testes de generalização com fotos da família e missões.</span></li>
+    <li><b>Semana 12</b><span>A Festa da Luz.</span></li>
+    <li><b>Toda semana</b><span>Clareira do Encontro uma vez por semana e a missão de brincar todos os dias.</span></li>
+  </ol>
+</section>
+
+<section id="medir" aria-labelledby="t-medir">
+  <p class="eyebrow">Prova, não impressão</p>
+  <h2 id="t-medir">Como saber se funciona</h2>
+  <h3>O que medir</h3>
+  <ul class="lista">
+    <li><b>Dentro do jogo, sozinho:</b> acertos sem ajuda por alvo, degrau de ajuda usado, tempo de resposta, uso da pausa e os “como estou”.</li>
+    <li><b>Fora do jogo, o que importa:</b> missões feitas e a nota do adulto de 0 a 3 para cada uma.</li>
+    <li><b>Metas individuais (escala de alcance de metas):</b> três metas escritas com o terapeuta no começo, cada uma com cinco resultados possíveis, de −2 a +2.</li>
+    <li><b>Instrumentos padronizados:</b> escolhidos pelo profissional e aplicados antes e depois (comportamento adaptativo, responsividade social, regulação emocional).</li>
+    <li><b>O olhar de quem não aplica:</b> a avaliação do professor, como no Secret Agent Society, mostra se a mudança apareceu fora de casa.</li>
+  </ul>
+  <h3>Plano de validação</h3>
+  <ol class="fases">
+    <li><strong>Codesenho</strong><span>Adultos autistas, pais, psicólogos, fonoaudiólogos e terapeutas ocupacionais revisam roteiro e arte antes de qualquer programação.</span></li>
+    <li><strong>Usabilidade</strong><span>8 a 10 crianças dos três perfis testam primeiro um protótipo em papel e depois o digital. Mede-se desconforto sensorial e entendimento.</span></li>
+    <li><strong>Piloto de caso único</strong><span>3 a 6 crianças, com linha de base múltipla: os alvos entram em semanas diferentes, e cada criança serve de controle dela mesma.</span></li>
+    <li><strong>Ensaio clínico</strong><span>Grupo controle ativo (um jogo sem os componentes terapêuticos, como fez o Secret Agent Society), aprovado por Comitê de Ética em Pesquisa (Resolução CNS 466/2012).</span></li>
+  </ol>
+  <p class="aviso">Até passar pelas fases 3 e 4, a Ilha do Farol é uma proposta bem fundamentada, não um tratamento comprovado.</p>
+</section>
+
+<section id="etica" aria-labelledby="t-etica">
+  <p class="eyebrow">O que o jogo não faz</p>
+  <h2 id="t-etica">Ética e segurança</h2>
+  <ul class="lista">
+    <li><b>Complemento, não substituto.</b> O jogo não substitui psicólogo, fonoaudiólogo, terapeuta ocupacional ou médico. As metas vêm do plano terapêutico.</li>
+    <li><b>Dado de saúde de criança é dado sensível.</b> A LGPD trata dado de saúde como sensível (art. 11) e exige, para dado de criança, consentimento específico e em destaque de pelo menos um dos pais ou do responsável (art. 14). Por isso o jogo funciona sem internet, as fotos da família ficam só no aparelho e nada sai do tablet sem o adulto exportar.</li>
+    <li><b>Assentimento da criança.</b> “Agora não” é respeitado sempre.</li>
+    <li><b>Sem desenho viciante.</b> Sem recompensa aleatória, sem sequência diária, sem notificação, sem anúncio, sem compra.</li>
+    <li><b>Linguagem.</b> O jogo não fala em “doença”, “cura” ou “normal”. Fala em jeito, necessidade e ajuda.</li>
+    <li><b>Integração sensorial.</b> A Integração Sensorial de Ayres está na lista do NCAEP, mas é terapia presencial feita por terapeuta ocupacional. O jogo só respeita o perfil sensorial da criança; ele não faz essa terapia.</li>
+  </ul>
+</section>
+
+<section id="aberto" aria-labelledby="t-aberto">
+  <p class="eyebrow">Próximas decisões</p>
+  <h2 id="t-aberto">O que falta decidir</h2>
+  <ol class="lista">
+    <li><b>Plataforma.</b> Só tablet, ou também uma versão de tabuleiro para clínica e escola.</li>
+    <li><b>Público da primeira versão.</b> Os três perfis ou começar pelos perfis B e C, deixando o A para a segunda.</li>
+    <li><b>Codesenho.</b> Quem participa: grupo de adultos autistas e uma clínica parceira.</li>
+    <li><b>Voz e arte.</b> Voz humana gravada (recomendada) e o estilo visual dos personagens.</li>
+    <li><b>Nome.</b> “Ilha do Farol” é nome de trabalho.</li>
+  </ol>
+</section>
+
+<section id="fontes" aria-labelledby="t-fontes">
+  <p class="eyebrow">De onde vem cada afirmação</p>
+  <h2 id="t-fontes">Referências</h2>
+  <ol class="refs">
+    <li>Steinbrenner, J. R. e colegas (2020). <i>Evidence-Based Practices for Children, Youth, and Young Adults with Autism.</i> FPG Child Development Institute, UNC. <a href="https://eric.ed.gov/?id=ED609029">ERIC ED609029</a>. Resumo em Hume e colegas (2021), <a href="https://pubmed.ncbi.nlm.nih.gov/33449225/">J Autism Dev Disord</a>.</li>
+    <li>Leaf, J. B. e colegas (2021). The evidence-based practices for children, youth, and young adults with autism report: concerns and critiques. <i>Behavioral Interventions.</i> <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/bin.1771">doi:10.1002/bin.1771</a>.</li>
+    <li>Fletcher-Watson, S. e colegas (2014). Interventions based on the Theory of Mind cognitive model for autism spectrum disorder. <i>Cochrane Database of Systematic Reviews</i>, CD008785. <a href="https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD008785.pub2/full">Cochrane Library</a>.</li>
+    <li>Whyte, E. M., Smyth, J. M. e Scherf, K. S. (2015). Designing serious game interventions for individuals with autism. <i>J Autism Dev Disord</i>, 45(12), 3820–3831. <a href="https://pubmed.ncbi.nlm.nih.gov/25488121/">PubMed</a>.</li>
+    <li>Beaumont, R. e colegas (2021). Randomized controlled trial of a video gaming-based social skills program for children on the autism spectrum. <i>J Autism Dev Disord.</i> <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7778851/">PMC7778851</a>.</li>
+    <li>Grynszpan, O. e colegas (2014). Innovative technology-based interventions for autism spectrum disorders: a meta-analysis. <i>Autism</i>, 18(4). <a href="https://journals.sagepub.com/doi/abs/10.1177/1362361313476767">SAGE</a>.</li>
+    <li>Grossard, C. e colegas (2017). Serious games to teach social interactions and emotions to individuals with autism spectrum disorders. <i>Computers &amp; Education</i>, 113, 195–211. <a href="https://hal.sorbonne-universite.fr/hal-01525828">HAL</a>.</li>
+    <li>Tanaka, J. W. e colegas (2010). Using computerized games to teach face recognition skills to children with autism spectrum disorder: the Let’s Face It! program. <i>J Child Psychol Psychiatry.</i> <a href="https://pubmed.ncbi.nlm.nih.gov/20646129/">PubMed</a>.</li>
+    <li>Kasari, C., Freeman, S. e Paparella, T. (2006). Joint attention and symbolic play in young children with autism: a randomized controlled intervention study. <i>J Child Psychol Psychiatry.</i> <a href="https://pubmed.ncbi.nlm.nih.gov/16712638/">PubMed</a>.</li>
+    <li>Dawson, G. e colegas (2010). Randomized, controlled trial of an intervention for toddlers with autism: the Early Start Denver Model. <i>Pediatrics</i>, 125(1). <a href="https://pubmed.ncbi.nlm.nih.gov/19948568/">PubMed</a>.</li>
+    <li>Milton, D. (2012). On the ontological status of autism: the “double empathy problem”. <i>Disability &amp; Society</i>, 27(6), 883–887. <a href="https://www.tandfonline.com/doi/abs/10.1080/09687599.2012.710008">Taylor &amp; Francis</a>.</li>
+    <li>Kapp, S. K. e colegas (2019). “People should be allowed to do what they like”: autistic adults’ views and experiences of stimming. <i>Autism</i>, 23(7), 1782–1792. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6728747/">PMC6728747</a>.</li>
+    <li>Stokes, T. F. e Baer, D. M. (1977). An implicit technology of generalization. <i>Journal of Applied Behavior Analysis</i>, 10(2), 349–367.</li>
+    <li>Gray, C. Histórias Sociais (método e critérios). <a href="https://carolgraysocialstories.com/">carolgraysocialstories.com</a>.</li>
+    <li>Sociedade Brasileira de Pediatria. Manual de Orientação #MenosTelas #MaisSaúde, atualização. <a href="https://www.sbp.com.br/fileadmin/user_upload/24604c-MO__MenosTelas__MaisSaude-Atualizacao.pdf">SBP</a>.</li>
+    <li>W3C. WCAG 2.1, critério 2.3.1: três flashes ou abaixo do limite. <a href="https://w3c.github.io/wcag21/understanding/three-flashes-or-below-threshold.html">W3C</a>.</li>
+    <li>Brasil. Lei 13.709/2018 (Lei Geral de Proteção de Dados), arts. 11 e 14.</li>
+    <li>Conselho Nacional de Saúde. Resolução 466/2012 (pesquisa com seres humanos).</li>
+  </ol>
+  <p class="rodape">Fontes com link conferidas em 24/09/2026. Documento de desenho de jogo: não é orientação clínica para uma criança específica.</p>
+</section>
+
+</main>
+</div>
