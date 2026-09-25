@@ -230,7 +230,8 @@ def main() -> int:
     mascaravel.resize((512, 512), Image.LANCZOS).save(ICONES / "icone-maskable-512.png")
     print("ok  ícones do app (montados com farol + Lume)")
 
-    (DESTINO / "arte.json").write_text(json.dumps(dict(sorted(mapa.items())), indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    with open(DESTINO / "arte.json", "w", encoding="utf-8", newline="\n") as f:  # LF, igual ao que o git publica
+        f.write(json.dumps(dict(sorted(mapa.items())), indent=1, ensure_ascii=False) + "\n")
     folha_de_revisao(mapa)
     total = sum((DESTINO / f).stat().st_size for f in mapa.values())
     print(f"{len(mapa)} imagens em docs/jogo/img ({total / 1024:.0f} KB); revisão em {REVISAO}")
