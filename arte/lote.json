@@ -1,0 +1,271 @@
+{
+ "sobre": "Ficha de criação da arte da Ilha do Farol. Cada peça tem o prompt exato, o modelo e onde entra no jogo. Gerado no Kairogen; processado por arte/processar.py.",
+ "modelo": "nano-banana-pro",
+ "resolucao": "2k",
+ "referencia_estilo": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/32c37734-f23c-4d37-8889-680bee192044.png",
+ "estilo": "Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines.",
+ "proibicoes": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details.",
+ "fundo_branco": "Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+ "pecas": [
+  {
+   "id": "lume-calmo",
+   "chaves": [
+    "lume-calmo"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "The exact same character as the reference image: Lume, the baby octopus, with the same shape, proportions, big round eyes and six tentacles. Body color: light warm apricot (#EDB978). Expression: calm, content and relaxed, like after a slow deep breath: the same big round friendly eyes fully open with soft relaxed eyebrows curved gently upward, and a small gentle closed-mouth smile. Not sleepy, not bored, not half-closed eyes. Front view, full body, centered."
+  },
+  {
+   "id": "lume-triste",
+   "chaves": [
+    "lume-triste"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "The exact same character as the reference image: Lume, the baby octopus, with the same shape, proportions, eyes and six tentacles. Body color changed to soft light blue (#86AACB). Expression: a little sad, inner eyebrows slightly raised, small gently downturned mouth, no tears. Front view, full body, centered."
+  },
+  {
+   "id": "lume-bravo",
+   "chaves": [
+    "lume-bravo"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "The exact same character as the reference image: Lume, the baby octopus, with the same shape, proportions, eyes and six tentacles. Body color changed to soft coral (#D98466). Expression: a little frustrated, eyebrows lowered, small flat pouting mouth, still cute and not scary. Front view, full body, centered."
+  },
+  {
+   "id": "lume-medo",
+   "chaves": [
+    "lume-medo"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "The exact same character as the reference image: Lume, the baby octopus, with the same shape, proportions, eyes and six tentacles. Body color changed to soft lavender (#B7A4CF). Expression: a bit worried, eyes wide open, small round mouth, tentacles slightly pulled in. Front view, full body, centered."
+  },
+  {
+   "id": "lume-dormindo",
+   "chaves": [
+    "lume-dormindo"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "The exact same character as the reference image: Lume, the baby octopus, with the same shape, proportions and six tentacles. Body color: soft muted apricot (#E7B98A). Sleeping peacefully: eyes closed as two gentle downward curved lines, relaxed tiny smile, tentacles resting. No letters, no z symbols. Front view, full body, centered."
+  },
+  {
+   "id": "gigi",
+   "chaves": [
+    "gigi"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "A new character drawn in exactly the same art style as the reference image (do not draw the octopus): Gigi, a friendly chubby seagull. Round white body, soft light grey wings, small warm yellow-orange beak, short orange legs, big friendly round eyes like the reference character, happy expression. Standing, three-quarter side view facing left, full body, centered."
+  },
+  {
+   "id": "gigi-alto",
+   "chaves": [
+    "gigi-alto"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "gigi"
+   ],
+   "prompt": "The exact same seagull as the reference image, same colors, proportions and pose, facing left. Now she is talking very loudly: beak wide open, eyes wide, and three soft curved sound-wave arcs in teal (#2A7778) in front of her beak. Full body, centered."
+  },
+  {
+   "id": "tuca",
+   "chaves": [
+    "tuca"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "A new character drawn in exactly the same art style as the reference image (do not draw the octopus): Tuca, a gentle slow turtle. Soft sage-green domed shell with a simple hexagon pattern, light green head and legs, big friendly round eyes like the reference character, small kind smile. Side view facing left, full body, centered."
+  },
+  {
+   "id": "caco",
+   "chaves": [
+    "caco"
+   ],
+   "tipo": "personagem",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "A new character drawn in exactly the same art style as the reference image (do not draw the octopus): Caco, a small friendly crab. Soft coral-orange rounded body, two rounded claws, eyes on short stalks, big friendly round eyes like the reference character, small smile, wearing soft teal (#2A7778) over-ear headphones. Front view, full body, centered."
+  },
+  {
+   "id": "folha-conchas",
+   "chaves": [
+    "concha-azul",
+    "concha-rosa",
+    "concha-amarela"
+   ],
+   "tipo": "folha",
+   "aspecto": "21:9",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "Three scallop seashells in one horizontal row, same size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: soft blue (#7FB3D5), soft pink (#F2B5A7), soft yellow (#F4D59A). Each shell upright, front view."
+  },
+  {
+   "id": "folha-coisas",
+   "chaves": [
+    "peixe",
+    "bola",
+    "estrela",
+    "alga"
+   ],
+   "tipo": "folha",
+   "aspecto": "21:9",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "Four separate objects in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: a small friendly light blue fish facing left, a pink and white beach ball, a warm yellow-orange starfish, a sprig of soft green seaweed."
+  },
+  {
+   "id": "folha-bau",
+   "chaves": [
+    "bau",
+    "bau-aberto"
+   ],
+   "tipo": "folha",
+   "aspecto": "16:9",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "Two small wooden treasure chests side by side with a very wide empty gap between them, same size, drawn in the same art style as the reference image (do not draw the octopus). Left: closed chest with a small amber lock. Right: the same chest open, with one small soft blue seashell inside. Front view."
+  },
+  {
+   "id": "farol",
+   "chaves": [
+    "farol"
+   ],
+   "tipo": "cenario",
+   "aspecto": "2:3",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "A small friendly lighthouse drawn in the same art style as the reference image (do not draw the octopus): rounded white tower with two soft teal (#2A7778) stripes, a warm glowing amber (#D8952A) lantern room at the top, dark teal roof, small door, standing on a small rounded grey rock base. Front view, tall, centered, no light beams."
+  },
+  {
+   "id": "barraca",
+   "chaves": [
+    "barraca"
+   ],
+   "tipo": "cenario",
+   "aspecto": "4:3",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "A small empty beach market stall drawn in the same art style as the reference image (do not draw the octopus or any character): two light wooden posts, a scalloped awning with soft teal (#2A7778) and cream stripes, a simple light wooden counter, nothing on the counter. Front view, centered."
+  },
+  {
+   "id": "fundo",
+   "chaves": [
+    "fundo"
+   ],
+   "tipo": "fundo",
+   "aspecto": "16:9",
+   "referencias": [
+    "estilo"
+   ],
+   "sem_fundo_branco": true,
+   "prompt": "A calm wide landscape background for a children's game, in the same soft flat art style as the reference image, with no characters and no octopus. Pale sky (#EAF3F2) with two very soft small clouds in the upper part, a calm pale teal sea (#D2E6E6) as a horizontal band in the middle, smooth soft sand (#EEE7D3) in the lower third, tiny distant soft green island hills on the horizon at the far left and far right. Very low detail, lots of empty space in the center, no sun, no birds, no boats."
+  },
+  {
+   "id": "folha-temas",
+   "chaves": [
+    "tema-trem",
+    "tema-dinossauro",
+    "tema-planeta",
+    "tema-carro",
+    "tema-peixe"
+   ],
+   "tipo": "folha",
+   "aspecto": "21:9",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "Five separate cute sticker-like objects in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: a blue toy train locomotive, a friendly green baby dinosaur, an orange planet with a lavender ring, a coral toy car, a friendly light blue whale."
+  },
+  {
+   "id": "folha-cartoes",
+   "chaves": [
+    "carta-euquero",
+    "carta-ajuda",
+    "carta-maisbaixo",
+    "carta-naoobrigado",
+    "carta-tchau",
+    "carta-embora"
+   ],
+   "tipo": "folha",
+   "aspecto": "21:9",
+   "referencias": [],
+   "prompt": "Six separate simple flat pictogram icons for a communication board for young children, in one horizontal row, same size, evenly spaced with very wide empty gaps between them. Style: thick rounded dark teal (#14303A) lines with one soft teal (#2A7778) accent each, clean and minimal, instantly readable. From left to right: two open cupped hands reaching forward (meaning I want); two hands, one helping to lift the other (meaning help); a sound speaker with a small downward arrow (meaning quieter, please); a simple calm face with a small left-right arrow under it, like a gentle head shake (meaning no, thank you); a waving open hand with two small motion lines (meaning bye); an open door with an arrow going out (meaning I am leaving)."
+  },
+  {
+   "id": "folha-atividades",
+   "chaves": [
+    "atividade-brincar",
+    "atividade-lanche",
+    "atividade-banho",
+    "atividade-dormir",
+    "atividade-escola",
+    "atividade-passear"
+   ],
+   "tipo": "folha",
+   "aspecto": "21:9",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "Six separate simple objects in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: three colorful stacked toy blocks, a red apple, a small bathtub with soft bubbles, a lavender crescent moon, a light blue school backpack, a small round green tree."
+  },
+  {
+   "id": "logo",
+   "chaves": [
+    "logo"
+   ],
+   "tipo": "logo",
+   "aspecto": "16:9",
+   "referencias": [
+    "estilo"
+   ],
+   "prompt": "Wordmark logo for a children's game. The only text is exactly: Ilha do Farol. Soft rounded friendly bold lettering in dark teal (#14303A), with a small cute lighthouse with a warm amber light placed to the left of the words, drawn in the same art style as the reference image (do not draw the octopus). Flat, calm, centered, no other words, no slogan."
+  },
+  {
+   "id": "icone",
+   "chaves": [
+    "icone"
+   ],
+   "tipo": "icone",
+   "aspecto": "1:1",
+   "referencias": [
+    "estilo"
+   ],
+   "sem_fundo_branco": true,
+   "prompt": "Square app icon with a full-bleed soft teal (#2A7778) background, no border. Centered: a cute small white lighthouse with a warm amber light and, beside it, the exact baby octopus character from the reference image peeking and smiling. Everything inside the central 70% of the square. Same soft flat art style as the reference. No text."
+  }
+ ]
+}

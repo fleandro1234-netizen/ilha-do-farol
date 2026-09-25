@@ -2,7 +2,7 @@
 /* Ilha do Farol: protótipo de homologação, lugar Vila Conversa.
    Roda inteiro no aparelho: sem servidor, sem conta e, depois da primeira abertura, sem internet. */
 
-const VERSAO = '0.1.0';
+const VERSAO = '0.2.0';
 const CHAVE = 'ilhaFarol.v1';
 const TETO_DIARIO_MIN = 30;
 const ANEIS = 5;
@@ -30,10 +30,10 @@ const DEGRAUS = { 0: 'sozinha', 2: 'pista visual', 3: 'modelo do Lume', 4: 'ajud
 
 const ETAPAS = {
   comoEstou: { rotulo: 'Como estou', fala: 'dizer como você está', icone: () => ICONE.comoEstou() },
-  aquecer: { rotulo: 'Aquecer', fala: 'aquecer', icone: () => ICONE.aquecer() },
-  vila: { rotulo: 'Vila Conversa', fala: 'ir à Vila Conversa', icone: () => ICONE.vila() },
-  tesouro: { rotulo: 'Tesouro', fala: 'ver o tesouro', icone: () => ICONE.tesouro() },
-  tchau: { rotulo: 'Tchau', fala: 'dar tchau', icone: () => ICONE.tchau() },
+  aquecer: { rotulo: 'Aquecer', fala: 'aquecer', icone: () => A.coisa('concha', 'amarela') },
+  vila: { rotulo: 'Vila Conversa', fala: 'ir à Vila Conversa', icone: () => A.barraca() },
+  tesouro: { rotulo: 'Tesouro', fala: 'ver o tesouro', icone: () => A.bau(false) },
+  tchau: { rotulo: 'Tchau', fala: 'dar tchau', icone: () => A.carta('tchau') },
 };
 
 const TERMO = [
@@ -228,7 +228,14 @@ const A = {
   farol: aneis => (IMG.farol ? `<div class="farol-foto">${img('farol', 'farol foto', 'farol')}${arteAneis(aneis)}</div>` : arteFarol(aneis)),
   barraca: () => IMG.barraca ? img('barraca', 'barraca foto', '') : arteBarraca(),
   tema: t => IMG['tema-' + t] ? img('tema-' + t, 'tema foto', TEMAS[t].nome) : TEMAS[t].arte(),
-  carta: id => IMG['carta-' + id] ? img('carta-' + id, 'picto foto', CARTOES[id].rotulo) : CARTOES[id].arte(),
+  carta: id => {
+    if (IMG['carta-' + id]) return img('carta-' + id, 'picto foto', CARTOES[id].rotulo);
+    if (COISAS[id]) return A.coisa(id, id === 'concha' ? 'amarela' : undefined);
+    return CARTOES[id].arte();
+  },
+  atividade: k => IMG['atividade-' + k] ? img('atividade-' + k, 'atividade foto', ATIVIDADES[k].nome) : ATIVIDADES[k].arte(),
+  fundo: () => IMG.fundo ? ' com-fundo' : '',
+  logo: () => IMG.logo ? img('logo', 'logo foto', 'Ilha do Farol') : '',
 };
 function arteAneis(aneis) {
   let arcos = '';
@@ -350,8 +357,8 @@ let S = null; // sessão em andamento
 function telaCrianca({ palco, opcoes = '', comAgenda = true, comPausa = true, classe = '' }) {
   const calmo = E.config.sensorial.modoCalmo ? ' calmo' : '';
   raiz().innerHTML = `<div class="tela${calmo} ${classe}">
-    <header class="topo">${comAgenda && S ? agendaHTML() : '<span></span>'}${comPausa && S ? `<button class="btn-pausa" id="btnPausa" aria-label="Preciso de pausa">${PICTO.pausa()}<span>Pausa</span></button>` : ''}</header>
-    <main class="palco" id="palco">${palco}<div class="legenda" id="legenda" aria-live="polite"></div></main>
+    <header class="topo">${comAgenda && S ? agendaHTML() : '<span></span>'}<div class="topo-dir">${S && S.etapa >= 0 ? poteHTML() : ''}${comPausa && S ? `<button class="btn-pausa" id="btnPausa" aria-label="Preciso de pausa">${PICTO.pausa()}<span>Pausa</span></button>` : ''}</div></header>
+    <main class="palco${A.fundo()}" id="palco">${palco}<div class="legenda" id="legenda" aria-live="polite"></div></main>
     <footer class="opcoes" id="opcoes">${opcoes}</footer></div>`;
   on('#btnPausa', abrirPausa);
 }
@@ -380,10 +387,9 @@ function telaInicio() {
   const nome = E.config.crianca.apelido;
   const calmo = E.config.sensorial.modoCalmo ? ' calmo' : '';
   raiz().innerHTML = `<div class="tela inicio${calmo}">
-    ${!E.pinPsi ? '<p class="aviso-topo">Primeiro acesso: o adulto configura antes (segure o botão Adulto).</p>' : ''}
-    <main class="palco"><div class="cena-inicio">${A.farol(aneis)}${A.lume({ humor: limite ? 'dormindo' : 'feliz', acenando: !limite })}</div>
+    <main class="palco${A.fundo()}">${A.logo()}<div class="cena-inicio">${A.farol(aneis)}${A.lume({ humor: limite ? 'dormindo' : 'feliz', acenando: !limite })}</div>
       <div class="legenda" id="legenda" aria-live="polite"></div></main>
-    <footer class="opcoes">${limite
+    <footer class="opcoes">${!E.pinPsi ? '<p class="aviso-topo">Primeiro acesso: o adulto configura antes (segure o botão Adulto).</p>' : ''}${limite
       ? '<p class="missao-adulto">A tela já brincou bastante hoje. Até amanhã!</p>'
       : `<button class="botao grande" id="jogar">Jogar${nome ? ', ' + esc(nome) : ''}</button>`}</footer>
     <button class="btn-adulto" id="btnAdulto" aria-label="Área do adulto: segure por 2 segundos"><span class="enche"></span>Adulto <small>segure</small></button>
@@ -681,7 +687,7 @@ function rodarTentativa(def, aoFim) {
   let passo = 0, erro = false, degrau = 0, maxDegrau = 0, latencia = null, t0 = performance.now(), travado = false, instrucaoAcabou = false;
 
   const faixa = def.multi ? `<div class="faixa" id="faixa">${def.passos.map(() => '<div class="slot"></div>').join('')}</div>` : '';
-  telaCrianca({ palco: def.cena + poteHTML(), opcoes: pedrinhasHTML() + faixa + '<div class="cartas" id="cartas"></div>' });
+  telaCrianca({ palco: def.cena, opcoes: pedrinhasHTML() + faixa + '<div class="cartas" id="cartas"></div>' });
 
   function desenharCartas() {
     const p = def.passos[passo];
@@ -821,7 +827,7 @@ function telaTesouro() {
   telaCrianca({
     palco: `<div class="tesouro">${A.farol(aneis)}<div class="museu"><b>Museu de ${esc(TEMAS[tema].nome)}</b>
       <div class="prateleira">${Array.from({ length: mostrar }, (_, i) => `<div class="${nova && i === mostrar - 1 ? 'nova' : ''}">${A.tema(tema)}</div>`).join('') || '<span class="vazio">A primeira peça chega logo.</span>'}</div>
-      ${pecas > 12 ? `<span class="vazio">+ ${pecas - 12} peças</span>` : ''}</div></div>` + poteHTML(),
+      ${pecas > 12 ? `<span class="vazio">+ ${pecas - 12} peças</span>` : ''}</div></div>`,
     opcoes: `<button class="botao" id="pronto">Pronto</button>`,
   });
   (async () => {
@@ -842,7 +848,7 @@ function telaTchau() {
   const missoes = missoesAtivas();
   const missao = missoes.length ? missoes[E.sessoes.length % missoes.length] : 'O cartão de pausa também vale em casa, e sempre funciona.';
   telaCrianca({
-    palco: `<div class="tchau">${A.lume({ acenando: true })}<div class="proxima">${ATIVIDADES[prox].arte()}<b>Agora: ${ATIVIDADES[prox].nome}</b></div></div>`,
+    palco: `<div class="tchau">${A.lume({ acenando: true })}<div class="proxima">${A.atividade(prox)}<b>Agora: ${ATIVIDADES[prox].nome}</b></div></div>`,
     opcoes: `<p class="missao-adulto"><b>Missão de casa, para o adulto:</b> ${esc(missao)}</p><button class="botao" id="tchau">Tchau</button>`,
   });
   (async () => {
@@ -1128,7 +1134,7 @@ function abaTestar(p) {
       <li>Na aba <b>Aparelho</b>, crie um PIN dos pais e entre com ele para ver o que os pais enxergam.</li>
     </ol></div>
     <div class="bloco"><h3>O que ainda é provisório</h3>
-      <p>Só um lugar da ilha. A voz é a sintética do próprio aparelho, e a arte pode ser provisória: a voz definitiva e as ilustrações em alta definição entram nas próximas versões. Os dados ficam só neste aparelho.</p>
+      <p>Só um lugar da ilha. A arte desta versão já é a definitiva desta fase, criada com IA em alta definição. A voz ainda é a sintética do próprio aparelho: a voz definitiva entra na próxima versão. Os dados ficam só neste aparelho.</p>
       <p>Anote o que mudaria e envie para quem mandou o link. O roteiro completo está em <a href="../">Ilha do Farol, roteiro</a>.</p></div>`;
 }
 

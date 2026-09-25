@@ -25,3 +25,7 @@ Aplicativo web instalável, sem servidor e sem conta: tudo fica no aparelho (loc
 - `audio/falas.json`: mapa das falas gravadas. Sem arquivo, o jogo usa a voz sintética do aparelho. A lista completa de falas sai na área do adulto, aba Aparelho.
 - Ao mudar arquivos do jogo, subir a versão em `VERSAO` (`app.js`) e em `CACHE` (`sw.js`).
 - Teste local: `python -m http.server 8830 --directory docs` e abrir `http://localhost:8830/jogo/`.
+
+## Arte (`arte/`)
+
+Toda a arte vem de IA de imagem e passa por `arte/processar.py`. A ficha de cada peça está em `arte/lote.json`, o resultado de cada geração em `arte/gerados.json`, e o passo a passo em `arte/LEIA-ME.md`. Os originais ficam em `arte-fonte/`, fora do git.

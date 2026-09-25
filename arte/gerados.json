@@ -1,0 +1,119 @@
+{
+ "lume-feliz": {
+  "geracao": "6ab667bd9783ca089a516645",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/32c37734-f23c-4d37-8889-680bee192044.png",
+  "creditos": 6,
+  "nota": "teste de estilo A aprovado; é a referência"
+ },
+ "lume-calmo": {
+  "geracao": "6ab68c3a9783ca089a52e4a1",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/8dfd4464-0464-493e-acc4-7b85490982df.png",
+  "creditos": 6,
+  "nota": "refeito: o primeiro (geração 6ab683afbddac791cc8ab86a) lia como entediado",
+  "creditos_descartados": 6
+ },
+ "lume-triste": {
+  "geracao": "6ab683f39783ca089a5275d6",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/3a43c6ee-fb5a-4283-8bf9-d2724f171ff0.png",
+  "creditos": 6
+ },
+ "lume-bravo": {
+  "geracao": "6ab684409783ca089a527cbe",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/fdadc211-4a8b-4804-83e5-c6e77795a4e4.png",
+  "creditos": 6
+ },
+ "lume-medo": {
+  "geracao": "6ab68470bddac791cc8ac46d",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/0345d78e-728b-43fd-9f6d-13a41b506be3.png",
+  "creditos": 6
+ },
+ "lume-dormindo": {
+  "geracao": "6ab684d99783ca089a52832e",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/1a8275f1-9845-4c03-af11-fa025e64bac6.png",
+  "creditos": 6
+ },
+ "gigi": {
+  "geracao": "6ab6850dbddac791cc8acb45",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/58aca79c-7426-42e9-8bd7-1de66f805590.png",
+  "creditos": 6,
+  "tolerancia": 6
+ },
+ "gigi-alto": {
+  "geracao": "6ab6855b9783ca089a528911",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/db802b07-6c0e-4aa5-b875-1e9031ec4d92.png",
+  "creditos": 6,
+  "tolerancia": 6
+ },
+ "tuca": {
+  "geracao": "6ab685cbbddac791cc8ad6d8",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/2e3fc661-eddb-4ba3-9dbb-0f6da7b8e13d.png",
+  "creditos": 6
+ },
+ "caco": {
+  "geracao": "6ab6860c9783ca089a5292e9",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/8681e5ea-ce2d-4199-b3ee-1c49e11c53c5.png",
+  "creditos": 6
+ },
+ "folha-conchas": {
+  "geracao": "6ab68650bddac791cc8ae03c",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/dd57ca22-71fb-4e67-8272-0454e011d4e0.png",
+  "creditos": 6
+ },
+ "folha-coisas": {
+  "geracao": "6ab686a59783ca089a529bf0",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/fbfa72b5-3139-4186-a435-68c918ca281c.png",
+  "creditos": 6,
+  "tolerancia": 5
+ },
+ "folha-bau": {
+  "geracao": "6ab687039783ca089a52a1f7",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/57771ae4-26b7-450b-885b-663f519fb9ca.png",
+  "creditos": 6
+ },
+ "farol": {
+  "geracao": "6ab687859783ca089a52ab83",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/1c877ec0-6548-4e6c-bc5f-b0ff93315dcf.png",
+  "creditos": 6,
+  "tolerancia": 5
+ },
+ "barraca": {
+  "geracao": "6ab687b3bddac791cc8af598",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/0568624f-aa3a-47be-a038-1c3ad16f435a.png",
+  "creditos": 6,
+  "buracos": true
+ },
+ "fundo": {
+  "geracao": "6ab68800bddac791cc8afabd",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/94fd3c2d-8dc4-4382-b4f2-ff2ff250c50e.png",
+  "creditos": 6
+ },
+ "folha-temas": {
+  "geracao": "6ab68833bddac791cc8afd22",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/d8fe8e9f-9b38-47b9-b084-ccfb70eaf2fc.png",
+  "creditos": 6
+ },
+ "folha-cartoes": {
+  "geracao": "6ab68893bddac791cc8b0242",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/e28b03c1-8c51-4fec-9124-6b77f15fbd54.png",
+  "creditos": 6
+ },
+ "folha-atividades": {
+  "geracao": "6ab688e79783ca089a52bd00",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/85ebe7f4-ec22-4b9d-a4a2-25e73eed1dd8.png",
+  "creditos": 6,
+  "tolerancia": 10,
+  "sombra_quente": true
+ },
+ "logo": {
+  "geracao": "6ab68939bddac791cc8b09c1",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/354d06f2-0164-4673-adfd-fe4c4346cf02.png",
+  "creditos": 6,
+  "nota": "farol do logo destoa: o script usa só o letreiro e monta com o nosso farol"
+ },
+ "icone": {
+  "geracao": "6ab6897cbddac791cc8b0d02",
+  "url": "https://cdn.kairogen.ai/gallery/images/6a7b7d777a352efac4204e5e/e87ed8a8-b56b-4250-89e8-519653620360.png",
+  "creditos": 6,
+  "nota": "base borrada: NÃO usado; o ícone é montado pelo script com farol + Lume"
+ }
+}
