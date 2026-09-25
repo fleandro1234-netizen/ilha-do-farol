@@ -2,7 +2,7 @@
 /* Ilha do Farol: protótipo de homologação, lugar Vila Conversa.
    Roda inteiro no aparelho: sem servidor, sem conta e, depois da primeira abertura, sem internet. */
 
-const VERSAO = '0.2.0';
+const VERSAO = '0.3.0';
 const CHAVE = 'ilhaFarol.v1';
 const TETO_DIARIO_MIN = 30;
 const ANEIS = 5;
@@ -47,18 +47,13 @@ const TERMO = [
 function configPadrao() {
   return {
     crianca: { apelido: '', interesse: 'trem', proxima: 'brincar' },
-    alvos: {
-      querer1: { ativo: true, nivel: 1, fase: 'ensino', sondagens: 3 },
-      querer2: { ativo: false, nivel: 1, fase: 'ensino', sondagens: 3 },
-      ajuda: { ativo: true, nivel: 1, fase: 'ensino', sondagens: 3 },
-      ajuste: { ativo: false, nivel: 1, fase: 'ensino', sondagens: 3 },
-      recusar: { ativo: false, nivel: 1, fase: 'ensino', sondagens: 3 },
-    },
+    alvos: Object.fromEntries(Object.keys(ALVOS).map(k => [k, { ativo: ALVOS_ATIVOS_PADRAO.includes(k), nivel: 1, fase: 'ensino', sondagens: 3 }])),
+    lugares: Object.fromEntries(Object.entries(LUGARES).map(([k, l]) => [k, JSON.parse(JSON.stringify(l.padrao))])),
     ensino: { ordem: 'menor-maior', atraso: 3, progressivo: false, tentativas: 6, faceis: 1, semErro: true,
       degraus: { pista: true, modelo: true, total: true } },
     reforco: { aCada: 1, sozinha: 2, ajuda: 1, comemoracao: 'quieta', rodadasPreferencia: 2 },
     criterio: { pct: 80, sessoes: 2 },
-    sessao: { aquecimento: true, tesouro: true, maxMin: 12, limiteDiarioMin: 20 },
+    sessao: { aquecimento: true, tesouro: true, maxMin: 12, limiteDiarioMin: 20, escolha: true, plano: ['farol', 'vila'] },
     sensorial: { volVoz: 0.9, volEfeitos: 0.4, velVoz: 0.95, voz: '', modoCalmo: false },
     permissoesPais: { volume: true, proxima: true, limite: false },
   };
@@ -71,6 +66,7 @@ function estadoPadrao() {
     historicoConfig: [{ versao: 1, ts: agoraISO(), resumo: 'Configuração inicial (padrão de fábrica)', papel: 'sistema' }],
     progresso: {}, sessoes: [], tentativas: [], conchasTotal: 0,
     abc: [], sugestoes: [], uso: {}, preferencia: null,
+    eventos: [], meuJeito: {}, meuJeitoIdx: 0, planoCalma: null, caixaCalma: {}, historiasMinhas: [], mercadoIdx: 0,
   };
 }
 
@@ -80,7 +76,7 @@ const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const quemTem = m => `${cap(MORADORES[m].artigo)} ${MORADORES[m].nome}`;
 
 const FALA = {
-  chegada: etapas => fx('chegada.' + etapas.join('-'), 'Hoje a gente vai ' + listaHumana(etapas.map(e => ETAPAS[e].fala)) + '.'),
+  chegada: etapas => fx('chegada.' + etapas.join('-'), 'Hoje a gente vai ' + listaHumana(etapas.map(e => etapaInfo(e).fala)) + '.'),
   vamos: fx('chegada.vamos', 'Vamos?'),
   agoraNao: fx('chegada.agoranao', 'Tudo bem. Eu espero. Quando você quiser, toca no Jogar.'),
   comoEstou: fx('comoestou.pergunta', 'Como você está agora? Toca no termômetro.'),
@@ -145,6 +141,7 @@ const FALA = {
 let armazenamentoOk = true;
 let E = null;
 
+// Junta o salvo sobre o padrão. Valor de tipo diferente do padrão (texto no lugar de número, por exemplo) fica com o padrão.
 function mesclar(base, salvo) {
   if (Array.isArray(base)) return Array.isArray(salvo) ? salvo : base;
   if (base && typeof base === 'object') {
@@ -153,14 +150,53 @@ function mesclar(base, salvo) {
     if (salvo && typeof salvo === 'object') for (const k of Object.keys(salvo)) if (!(k in saida)) saida[k] = salvo[k];
     return saida;
   }
+  if (typeof base === 'number') return typeof salvo === 'number' && Number.isFinite(salvo) ? salvo : base;
+  if (typeof base === 'boolean') return typeof salvo === 'boolean' ? salvo : base;
+  if (typeof base === 'string') return typeof salvo === 'string' ? salvo : base;
   return salvo === undefined ? base : salvo;
 }
+// Faixas e listas válidas da configuração: vale para o estado salvo e para o arquivo importado.
+const FAIXAS = {
+  'ensino.atraso': [0, 10], 'ensino.faceis': [0, 3], 'criterio.pct': [50, 100], 'criterio.sessoes': [1, 5],
+  'reforco.sozinha': [0, 5], 'reforco.ajuda': [0, 5], 'reforco.aCada': [1, 5], 'reforco.rodadasPreferencia': [1, 5],
+  'sessao.maxMin': [5, 20], 'sessao.limiteDiarioMin': [5, TETO_DIARIO_MIN],
+  'sensorial.volVoz': [0, 1], 'sensorial.volEfeitos': [0, 1], 'sensorial.velVoz': [0.7, 1.2],
+};
+function sanearConfig(c) {
+  const p = configPadrao();
+  for (const [cam, [min, max]] of Object.entries(FAIXAS)) definirCaminho(c, cam, clamp(obterCaminho(c, cam), min, max));
+  if (!(c.crianca.interesse in TEMAS)) c.crianca.interesse = p.crianca.interesse;
+  if (!(c.crianca.proxima in ATIVIDADES)) c.crianca.proxima = p.crianca.proxima;
+  if (!['menor-maior', 'maior-menor'].includes(c.ensino.ordem)) c.ensino.ordem = p.ensino.ordem;
+  if (!['quieta', 'danca', 'som'].includes(c.reforco.comemoracao)) c.reforco.comemoracao = p.reforco.comemoracao;
+  for (const k of Object.keys(c.alvos)) {
+    if (!ALVOS[k]) { delete c.alvos[k]; continue; }
+    const a = c.alvos[k];
+    if (!(a.fase in FASES)) a.fase = 'ensino';
+    a.nivel = clamp(Math.round(a.nivel), 1, 3);
+    a.sondagens = clamp(Math.round(a.sondagens), 1, 8);
+  }
+  for (const k of Object.keys(c.lugares)) {
+    if (!LUGARES[k]) { delete c.lugares[k]; continue; }
+    const l = c.lugares[k];
+    if ('tarefas' in l) l.tarefas = clamp(Math.round(l.tarefas), 1, k === 'mercado' ? 3 : 12);
+    if ('nivel' in l) l.nivel = clamp(Math.round(l.nivel), 1, 3);
+    if ('pecas' in l) l.pecas = clamp(Math.round(l.pecas), 4, 6);
+  }
+  if (!['tras', 'frente', 'total'].includes(c.lugares.oficina.encadeamento)) c.lugares.oficina.encadeamento = 'tras';
+  c.sessao.plano = c.sessao.plano.filter(l => LUGARES[l]).slice(0, 3);
+  return c;
+}
 function carregar() {
+  let salvo = null;
   try {
     const texto = localStorage.getItem(CHAVE);
-    if (texto) return mesclar(estadoPadrao(), JSON.parse(texto));
+    if (texto) salvo = mesclar(estadoPadrao(), JSON.parse(texto));
   } catch (e) { armazenamentoOk = false; }
-  return estadoPadrao();
+  if (!salvo) return estadoPadrao();
+  // uma falha aqui nunca pode trocar os registros salvos pelo estado vazio
+  try { sanearConfig(salvo.config); } catch (e) { console.error('configuração salva com defeito', e); }
+  return salvo;
 }
 function salvar() {
   try {
@@ -172,7 +208,8 @@ function salvar() {
 }
 function alterarConfig(resumo, fn) {
   fn(E.config);
-  E.config.sessao.limiteDiarioMin = Math.min(TETO_DIARIO_MIN, E.config.sessao.limiteDiarioMin);
+  sanearConfig(E.config);
+  expirarSugestoes();
   E.configVersao++;
   E.historicoConfig.push({ versao: E.configVersao, ts: agoraISO(), resumo, papel: papel || 'sistema' });
   salvar();
@@ -209,6 +246,14 @@ function limparTimers() { timers.forEach(clearTimeout); timers = []; }
 function novaTela() { geracao++; limparTimers(); return geracao; }
 const vivo = g => g === geracao;
 function depois(ms, fn) { const t = setTimeout(fn, ms); timers.push(t); return t; }
+// Depois que uma tarefa foi registrada, a volta da pausa segue adiante em vez de repetir a tarefa.
+// Devolve a função de seguir, que só roda uma vez.
+function seguirDepois(fn) {
+  let foi = false;
+  const seguir = () => { if (!foi) { foi = true; fn(); } };
+  if (S) S.retomar = seguir;
+  return seguir;
+}
 
 /* ============================================================
    Imagens: a arte das IAs entra por cima do desenho provisório
@@ -230,6 +275,7 @@ const A = {
   tema: t => IMG['tema-' + t] ? img('tema-' + t, 'tema foto', TEMAS[t].nome) : TEMAS[t].arte(),
   carta: id => {
     if (IMG['carta-' + id]) return img('carta-' + id, 'picto foto', CARTOES[id].rotulo);
+    if (CARTOES[id] && CARTOES[id].img && IMG[CARTOES[id].img]) return img(CARTOES[id].img, 'picto foto', CARTOES[id].rotulo);
     if (COISAS[id]) return A.coisa(id, id === 'concha' ? 'amarela' : undefined);
     return CARTOES[id].arte();
   },
@@ -262,9 +308,13 @@ let audioAtual = null;
 const TOM_VOZ = { lume: 1.15, gigi: 1.3, tuca: 0.8, caco: 1.0 };
 const NOME_FALANTE = { lume: 'Lume', gigi: 'Gigi', tuca: 'Tuca', caco: 'Caco' };
 
+// Quem espera uma fala cortada segue na hora, e não quando o relógio de segurança vencer.
+let falasPendentes = [];
 function pararFala() {
   try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) { /* sem voz */ }
   if (audioAtual) { try { audioAtual.pause(); } catch (e) { /* ok */ } audioAtual = null; }
+  const pendentes = falasPendentes; falasPendentes = [];
+  pendentes.forEach(fim => fim());
 }
 function mostrarLegenda(f) {
   const el = $('#legenda');
@@ -278,11 +328,13 @@ function falar(f) {
   mostrarLegenda(f);
   pararFala();
   const vol = E.config.sensorial.volVoz;
-  if (!(vol > 0)) return esperar(Math.min(4500, 900 + f.texto.length * 45));
   return new Promise(resolve => {
-    let feito = false;
-    const fim = () => { if (!feito) { feito = true; clearTimeout(seguranca); resolve(); } };
-    const seguranca = setTimeout(fim, 2500 + f.texto.length * 110 / E.config.sensorial.velVoz);
+    let feito = false, seguranca = null;
+    const fim = () => { if (!feito) { feito = true; clearTimeout(seguranca); falasPendentes = falasPendentes.filter(x => x !== fim); resolve(); } };
+    falasPendentes.push(fim);
+    // sem voz, a legenda fica o tempo de uma leitura calma
+    if (!(vol > 0)) { seguranca = setTimeout(fim, Math.min(4500, 900 + f.texto.length * 45)); return; }
+    seguranca = setTimeout(fim, 2500 + f.texto.length * 110 / E.config.sensorial.velVoz);
     const arquivo = AUDIOS[f.id];
     if (arquivo) {
       const a = new Audio('audio/' + arquivo);
@@ -341,7 +393,8 @@ function iniciarRelogio() {
   relogio = setInterval(() => {
     const k = hojeChave();
     E.uso[k] = (E.uso[k] || 0) + 5;
-    if (S && minutosHoje() >= limiteDiario()) S.tempoAcabou = true;
+    // o limite do dia e a duração máxima da sessão encerram do mesmo jeito: na próxima parada natural
+    if (S && (minutosHoje() >= limiteDiario() || sessaoPassouDoTempo())) S.tempoAcabou = true;
     salvar();
   }, 5000);
 }
@@ -364,11 +417,11 @@ function telaCrianca({ palco, opcoes = '', comAgenda = true, comPausa = true, cl
 }
 function agendaHTML() {
   return `<ol class="agenda" aria-label="Agenda de hoje">${S.etapas.map((e, i) =>
-    `<li class="${i < S.etapa ? 'feito' : i === S.etapa ? 'atual' : ''}" title="${ETAPAS[e].rotulo}">${ETAPAS[e].icone()}</li>`).join('')}</ol>`;
+    `<li class="${i < S.etapa ? 'feito' : i === S.etapa ? 'atual' : ''}" title="${etapaInfo(e).rotulo}">${etapaInfo(e).icone()}</li>`).join('')}</ol>`;
 }
 const poteHTML = () => `<div class="pote" id="pote">${A.coisa('concha', 'amarela')}<b id="poteN">${S ? S.conchas : 0}</b></div>`;
 function pedrinhasHTML() {
-  if (!S || !S.fila || S.etapas[S.etapa] !== 'vila') return '';
+  if (!S || !S.fila || !S.lugarAtual) return '';
   return `<div class="pedrinhas" aria-label="Tarefa ${S.idx + 1} de ${S.fila.length}">${S.fila.map((_, i) => `<i class="${i < S.idx ? 'feita' : i === S.idx ? 'atual' : ''}"></i>`).join('')}</div>`;
 }
 function cartaHTML(id) {
@@ -416,13 +469,13 @@ function iniciarSessao() {
   if (minutosHoje() >= limiteDiario()) { telaInicio(); falar(FALA.limite); return; }
   const etapas = ['comoEstou'];
   if (E.config.sessao.aquecimento) etapas.push('aquecer');
-  etapas.push('vila');
+  etapas.push(...lugaresDaSessao());
   if (E.config.sessao.tesouro) etapas.push('tesouro');
   etapas.push('tchau');
   S = { id: novoId(), inicio: agoraISO(), etapas, etapa: -1, comoEstou: null, comoEstouDepois: null,
     conchas: 0, pausas: 0, acertos: 0, tentativas: 0, configVersao: E.configVersao,
     pecasNoInicio: Math.floor(E.conchasTotal / CONCHAS_POR_PECA), aneisNoInicio: Math.min(ANEIS, Math.floor(E.conchasTotal / CONCHAS_POR_ANEL)),
-    fila: null, idx: 0, tempoAcabou: false, retomar: null };
+    fila: null, idx: 0, lugarAtual: null, tempoAcabou: false, retomar: null };
   iniciarRelogio();
   telaChegada();
 }
@@ -432,7 +485,7 @@ function telaChegada() {
   S.retomar = telaChegada;
   telaCrianca({
     comAgenda: false,
-    palco: `<div class="chegada"><div class="agenda-grande">${S.etapas.map(e => `<div>${ETAPAS[e].icone()}<span>${ETAPAS[e].rotulo}</span></div>`).join('')}</div>
+    palco: `<div class="chegada"><div class="agenda-grande">${S.etapas.map(e => `<div>${etapaInfo(e).icone()}<span>${etapaInfo(e).rotulo}</span></div>`).join('')}</div>
       <div class="cena-lume">${A.lume({ acenando: true })}</div></div>`,
     opcoes: `<div class="botoes"><button class="botao" id="vamos">Vamos</button><button class="botao claro" id="agoraNao">Agora não</button></div>`,
   });
@@ -443,9 +496,15 @@ function telaChegada() {
 
 function proximaEtapa() {
   S.etapa++;
+  if (S.tempoAcabou || sessaoPassouDoTempo()) {
+    // com o tempo esgotado, pula os lugares que faltam, mas a criança ainda vê o tesouro das conchas que ganhou
+    S.tempoAcabou = true;
+    S.etapa = S.etapas.findIndex((x, i) => i >= S.etapa && (x === 'tesouro' || x === 'tchau'));
+  }
   const e = S.etapas[S.etapa];
-  if (S.tempoAcabou && e !== 'tchau' && e !== 'tesouro') { S.etapa = S.etapas.indexOf('tchau') - 1; return proximaEtapa(); }
-  ({ comoEstou: () => telaComoEstou(false), aquecer: telaAquecer, vila: telaVila, tesouro: telaTesouro, tchau: telaTchau })[e]();
+  const fixas = { comoEstou: () => telaComoEstou(false), aquecer: telaAquecer, tesouro: telaTesouro, tchau: telaTchau, mapa: telaMapa };
+  if (fixas[e]) return fixas[e]();
+  entrarLugar(e);
 }
 
 function telaComoEstou(depoisDaOnda) {
@@ -497,8 +556,9 @@ function telaOnda(aoFim, { ciclos = 3, comoPausa = false } = {}) {
       : `<button class="botao claro" id="pular">Já estou melhor</button>`,
   });
   const caixa = $('#onda');
+  let saindo = false;
   const ciclo = async i => {
-    if (!vivo(g)) return;
+    if (!vivo(g) || saindo) return;
     if (!comoPausa && i >= ciclos) { aoFim(); return; }
     caixa.classList.add('sobe'); $('#dica').textContent = 'A onda sobe...';
     falar(FALA.ondaSobe);
@@ -509,7 +569,16 @@ function telaOnda(aoFim, { ciclos = 3, comoPausa = false } = {}) {
     ciclo(i + 1);
   };
   if (comoPausa) {
-    on('#voltar', () => { const r = S && S.retomar; limparTimers(); falar(FALA.pausaVolta).then(() => { if (vivo(g) && r) r(); }); });
+    // a pausa nunca é cortada pelo relógio; se o tempo acabou enquanto ela descansava, a volta leva ao fim da sessão
+    on('#voltar', () => {
+      if (saindo || !S) return;
+      saindo = true; limparTimers();
+      const r = S.retomar, noFim = ['tesouro', 'tchau'].includes(S.etapas[S.etapa]);
+      falar(FALA.pausaVolta).then(() => {
+        if (!vivo(g) || !S) return;
+        if (S.tempoAcabou && !noFim) { S.lugarAtual = null; S.fila = null; proximaEtapa(); } else if (r) r();
+      });
+    });
     on('#parar', () => { pararFala(); finalizarSessao('pausa'); telaInicio(); });
     falar(FALA.pausa).then(() => ciclo(0));
   } else {
@@ -534,19 +603,20 @@ function telaAquecer() {
   passo(0);
 }
 
-function telaVila() {
-  if (!S.fila) { S.fila = montarFila(); S.idx = 0; }
-  proximaTentativa();
-}
-function proximaTentativa() {
-  if (S.tempoAcabou || sessaoPassouDoTempo() || S.idx >= S.fila.length) return proximaEtapa();
-  const item = S.fila[S.idx];
-  rodarTentativa(criarDef(item), () => { S.idx++; salvar(); proximaTentativa(); });
+// Roda as tarefas de um lugar em sequência e depois chama aoFim.
+function rodarFila(lugar, aoFim) {
+  S.lugarAtual = lugar; S.fila = montarFila(lugar); S.idx = 0;
+  const passo = () => {
+    if (S.tempoAcabou || sessaoPassouDoTempo() || S.idx >= S.fila.length) { S.fila = null; return aoFim(); }
+    rodarTentativa(criarDef(S.fila[S.idx]), () => { S.idx++; salvar(); passo(); });
+  };
+  passo();
 }
 
-// Monta a sequência da Vila: linha de base primeiro, depois o ensino com itens fáceis intercalados.
-function montarFila() {
-  const alvos = Object.entries(E.config.alvos).filter(([, a]) => a.ativo);
+// Monta a sequência de um lugar: linha de base primeiro, depois o ensino com itens fáceis intercalados.
+function montarFila(lugar) {
+  const alvos = Object.entries(E.config.alvos).filter(([k, a]) => a.ativo && ALVOS[k] && ALVOS[k].lugar === lugar);
+  const tarefas = (E.config.lugares[lugar] || {}).tarefas || 6;
   const base = alvos.filter(([, a]) => a.fase === 'linha-de-base');
   const ensino = alvos.filter(([, a]) => a.fase === 'ensino').map(([k]) => k);
   const aprendidos = alvos.filter(([, a]) => a.fase === 'aprendido').map(([k]) => k);
@@ -556,14 +626,13 @@ function montarFila() {
   let f = 0;
   const facil = () => aprendidos.length ? { alvo: aprendidos[f++ % aprendidos.length], facil: true } : { alvo: 'facil' };
   if (ensino.length) {
-    for (let i = 0; i < E.config.ensino.tentativas; i++) {
+    for (let i = 0; i < tarefas; i++) {
       for (let j = 0; j < faceis; j++) fila.push(facil());
       fila.push({ alvo: ensino[i % ensino.length] });
     }
   } else if (!base.length) {
-    // nada em ensino: só manutenção dos aprendidos ou, sem alvo nenhum, o pedido básico
-    const lista = aprendidos.length ? aprendidos : ['querer1'];
-    for (let i = 0; i < E.config.ensino.tentativas; i++) fila.push({ alvo: lista[i % lista.length], facil: aprendidos.length > 0 });
+    // nada em ensino: só manutenção dos aprendidos (alvo desligado nunca entra na fila nem no registro)
+    for (let i = 0; aprendidos.length && i < tarefas; i++) fila.push({ alvo: aprendidos[i % aprendidos.length], facil: true });
   }
   return fila;
 }
@@ -659,7 +728,8 @@ function degrausHabilitados() {
 function topoDegrau() { const h = degrausHabilitados(); return h.length ? h[h.length - 1] : 0; }
 function proximoDegrau(d) { const h = degrausHabilitados().filter(n => n > d); return h.length ? h[0] : null; }
 function habilitadoAte(d) { if (!d) return 0; const h = degrausHabilitados().filter(n => n <= d); return h.length ? h[h.length - 1] : 0; }
-function sessoesComAlvo(alvo) { return new Set(E.tentativas.filter(t => t.alvo === alvo && !t.facil).map(t => t.sessao)).size; }
+// só as sessões anteriores contam: a espera fica a mesma do começo ao fim de uma sessão
+function sessoesComAlvo(alvo) { return new Set(E.tentativas.filter(t => t.alvo === alvo && !t.facil && !(S && t.sessao === S.id)).map(t => t.sessao)).size; }
 function atrasoEfetivo(alvo) {
   const e = E.config.ensino;
   if (!e.progressivo || alvo === 'facil') return e.atraso;
@@ -684,17 +754,22 @@ function rodarTentativa(def, aoFim) {
   S.retomar = () => rodarTentativa(def, aoFim);
   const linhaDeBase = def.fase === 'linha-de-base';
   const atraso = atrasoEfetivo(def.alvo) * 1000;
-  let passo = 0, erro = false, degrau = 0, maxDegrau = 0, latencia = null, t0 = performance.now(), travado = false, instrucaoAcabou = false;
+  let passo = 0, erro = false, degrau = 0, maxDegrau = 0, latencia = null, t0 = performance.now(), travado = false, instrucaoAcabou = false, escolha = null, lembrou = false;
 
-  const faixa = def.multi ? `<div class="faixa" id="faixa">${def.passos.map(() => '<div class="slot"></div>').join('')}</div>` : '';
+  const faixaIds = def.faixaTotal || (def.multi ? def.passos.map(p => p.correta) : null);
+  const ini = def.inicioFilho || 0;
+  const faixa = faixaIds ? `<div class="faixa${faixaIds.length > 5 ? ' longa' : ''}" id="faixa">${faixaIds.map((id, i) => (i < ini ? `<div class="slot cheio pre">${A.carta(id)}</div>` : '<div class="slot"></div>')).join('')}</div>` : '';
   telaCrianca({ palco: def.cena, opcoes: pedrinhasHTML() + faixa + '<div class="cartas" id="cartas"></div>' });
 
   function desenharCartas() {
     const p = def.passos[passo];
+    $('#cartas').className = 'cartas' + (def.pequenas ? ' pequenas' : '');
     $('#cartas').innerHTML = p.cartas.map(cartaHTML).join('');
     $$('#cartas .carta').forEach(b => b.addEventListener('click', () => escolher(b.dataset.id, b)));
   }
+  // Devolve a fala da ajuda (quando há), para a espera seguinte contar a partir do fim dela.
   function aplicarDegrau(d, comFala) {
+    if (def.livre) return;
     const correta = def.passos[passo].correta;
     $$('#cartas .carta').forEach(b => {
       const ok = b.dataset.id === correta;
@@ -703,30 +778,44 @@ function rodarTentativa(def, aoFim) {
       b.classList.toggle('modelo', d === 3 && ok);
       b.classList.toggle('brilha', d >= 4 && ok);
     });
-    if (comFala && d === 3) falar(def.passos[passo].modelo);
-    if (comFala && d === 4) falar(FALA.tocaAqui);
+    if (comFala && d === 3) return falar(def.passos[passo].modelo);
+    if (comFala && d === 4) return falar(FALA.tocaAqui);
+    return null;
   }
-  function agendarSubida() {
-    if (linhaDeBase) { depois(Math.max(atraso * 3, 10000), () => vivo(g) && terminar(false, true)); return; }
-    const prox = proximoDegrau(degrau);
-    if (prox === null) { depois(Math.max(atraso, 3000) + 12000, () => vivo(g) && terminar(false, true)); return; }
-    depois(atraso, () => {
-      if (!vivo(g) || travado) return;
-      degrau = prox; maxDegrau = Math.max(maxDegrau, degrau);
-      aplicarDegrau(degrau, true);
-      agendarSubida();
+  // Só a escada mais recente anda: um toque, um erro ou uma fala cortada nunca abrem uma segunda.
+  let cadeia = 0;
+  function agendarSubida(antes) {
+    const minha = ++cadeia;
+    const ativa = () => vivo(g) && !travado && minha === cadeia;
+    Promise.resolve(antes).then(() => {
+      if (!ativa()) return;
+      if (def.livre) {
+        // escolha livre: não existe errado; só lembra que pode escolher (o lembrete fica registrado) e depois segue
+        depois(Math.max(atraso * 2, 4000), () => { if (ativa()) { lembrou = true; falar(def.passos[passo].modelo); } });
+        depois(Math.max(atraso * 2, 4000) + 15000, () => ativa() && terminar(false, true));
+        return;
+      }
+      if (linhaDeBase) { depois(Math.max(atraso * 3, 10000), () => ativa() && terminar(false, true)); return; }
+      const prox = proximoDegrau(degrau);
+      if (prox === null) { depois(Math.max(atraso, 3000) + 12000, () => ativa() && terminar(false, true)); return; }
+      depois(atraso, () => {
+        if (!ativa()) return;
+        degrau = prox; maxDegrau = Math.max(maxDegrau, degrau);
+        agendarSubida(aplicarDegrau(degrau, true));
+      });
     });
   }
   function iniciarPasso() {
     desenharCartas();
-    degrau = linhaDeBase ? 0 : degrauInicial(def);
+    // linha de base e escolha livre começam sem ajuda nenhuma
+    degrau = linhaDeBase || def.livre ? 0 : degrauInicial(def);
     maxDegrau = Math.max(maxDegrau, degrau);
-    aplicarDegrau(degrau, false);
+    const fala = aplicarDegrau(degrau, instrucaoAcabou);
     travado = false;
-    if (instrucaoAcabou) agendarSubida();
+    if (instrucaoAcabou) agendarSubida(fala);
   }
   function colocarNaFaixa(id) {
-    const slot = $$('#faixa .slot')[passo];
+    const slot = $$('#faixa .slot')[ini + passo];
     if (slot) { slot.innerHTML = A.carta(id); slot.classList.add('cheio'); }
   }
   function escolher(id, botao) {
@@ -734,7 +823,8 @@ function rodarTentativa(def, aoFim) {
     SOM.toque();
     if (latencia === null) latencia = Math.round(performance.now() - t0);
     const correta = def.passos[passo].correta;
-    if (id === correta) {
+    if (def.livre || id === correta) {
+      escolha = id;
       limparTimers(); travado = true; pararFala();
       if (def.multi) colocarNaFaixa(id);
       passo++;
@@ -750,32 +840,41 @@ function rodarTentativa(def, aoFim) {
       if (!vivo(g)) return;
       const alvoDegrau = E.config.ensino.semErro ? topoDegrau() : (degrausHabilitados().includes(3) ? 3 : topoDegrau());
       degrau = Math.max(degrau, alvoDegrau); maxDegrau = Math.max(maxDegrau, degrau);
-      aplicarDegrau(degrau, true);
       travado = false;
-      agendarSubida();
+      agendarSubida(aplicarDegrau(degrau, true));
     });
   }
+  let terminou = false;
   function terminar(correta, semResposta) {
-    limparTimers(); travado = true;
-    const sozinha = correta && !erro && maxDegrau === 0;
-    registrarTentativa(def, { correta, sozinha, erro, degrau: maxDegrau, semResposta, latenciaMs: latencia, atrasoS: atraso / 1000 });
+    if (terminou) return;
+    terminou = true;
+    limparTimers(); travado = true; cadeia++;
+    const sozinha = correta && !erro && maxDegrau === 0 && !lembrou;
+    registrarTentativa(def, { correta, sozinha, erro, degrau: maxDegrau, semResposta, latenciaMs: latencia, atrasoS: atraso / 1000, escolha, lembrete: lembrou });
+    if (correta && !def.facil && !linhaDeBase) S.acertos++;
+    // a partir daqui a tarefa já está registrada: a pausa volta para a próxima, pagando as conchas devidas
+    const conchas = linhaDeBase ? 1 : correta ? (sozinha ? E.config.reforco.sozinha : E.config.reforco.ajuda) : 0;
+    let pago = false;
+    const pagar = () => { if (!pago) { pago = true; if (conchas) ganharConchas(conchas); } };
+    const seguir = seguirDepois(() => { pagar(); aoFim(); });
+    if (correta && def.completarDepois) {
+      // encadeamento para frente: o jogo completa os passos que a criança ainda não faz
+      $$('#faixa .slot').forEach((s, i) => { if (!s.classList.contains('cheio')) { s.innerHTML = A.carta(def.faixaTotal[i]); s.classList.add('cheio', 'pre'); } });
+    }
     if (linhaDeBase) {
-      ganharConchas(1);
-      falar(FALA.obrigado).then(() => vivo(g) && aoFim());
+      pagar();
+      falar(FALA.obrigado).then(() => vivo(g) && seguir());
       return;
     }
-    if (!correta) { falar(FALA.proxima).then(() => vivo(g) && aoFim()); return; }
+    if (!correta) { falar(FALA.proxima).then(() => vivo(g) && seguir()); return; }
     (async () => {
       if (def.aoAcertar) def.aoAcertar();
       const lado = $('#ladoLume'); if (lado) lado.innerHTML = A.lume({ humor: 'feliz', acenando: true });
       if (def.resposta) { await falar(def.resposta); if (!vivo(g)) return; }
-      ganharConchas(sozinha ? E.config.reforco.sozinha : E.config.reforco.ajuda);
+      pagar();
       await falar(def.elogio); if (!vivo(g)) return;
-      if (!def.facil) {
-        S.acertos++;
-        if (S.acertos % E.config.reforco.aCada === 0) await comemorar();
-      }
-      if (vivo(g)) aoFim();
+      if (!def.facil && S.acertos % E.config.reforco.aCada === 0) await comemorar();
+      if (vivo(g)) seguir();
     })();
   }
 
@@ -786,7 +885,8 @@ function rodarTentativa(def, aoFim) {
     if (!vivo(g)) return;
     instrucaoAcabou = true;
     t0 = performance.now();
-    if (!travado) agendarSubida();
+    // se a ajuda inicial já é o modelo ou a ajuda total, ela é dita logo depois da instrução
+    if (!travado) agendarSubida(degrau >= 3 ? aplicarDegrau(degrau, true) : null);
   })();
 }
 
@@ -839,7 +939,10 @@ function telaTesouro() {
 }
 
 function missoesAtivas() {
-  return Object.entries(E.config.alvos).filter(([, a]) => a.ativo).map(([k]) => ALVOS[k].missao);
+  const aberto = l => E.config.lugares[l] && E.config.lugares[l].aberto;
+  const m = Object.entries(E.config.alvos).filter(([k, a]) => a.ativo && ALVOS[k] && ALVOS[k].missao && aberto(ALVOS[k].lugar)).map(([k]) => ALVOS[k].missao);
+  for (const [l, info] of Object.entries(LUGARES)) if (info.missao && aberto(l)) m.push(info.missao);
+  return [...new Set(m)];
 }
 function telaTchau() {
   const g = novaTela();
@@ -876,7 +979,7 @@ function finalizarSessao(motivo) {
 function atualizarProgresso(sessaoId) {
   if (E.config.ensino.ordem !== 'maior-menor') return;
   for (const [alvo, a] of Object.entries(E.config.alvos)) {
-    if (!a.ativo || a.fase !== 'ensino') continue;
+    if (!ALVOS[alvo] || !a.ativo || a.fase !== 'ensino') continue;
     const tr = E.tentativas.filter(t => t.sessao === sessaoId && t.alvo === alvo && !t.facil);
     if (tr.length < 2) continue;
     const bons = tr.filter(t => t.correta && !t.erro).length / tr.length;
@@ -904,16 +1007,29 @@ function resumoPorSessao(alvo) {
     .sort((a, b) => (ordem.get(a.sessao) ?? 1e9) - (ordem.get(b.sessao) ?? 1e9) || a.ts.localeCompare(b.ts))
     .map(x => ({ ...x, pct: pct(x.sozinha, x.n) }));
 }
+// Uma sugestão vale para o nível e a fase em que nasceu. Ignorada, não volta enquanto nada mudar.
 function sugerir(alvo, tipo, texto) {
-  if (E.sugestoes.some(s => s.alvo === alvo && s.tipo === tipo && s.status === 'aberta')) return;
-  E.sugestoes.push({ id: novoId(), ts: agoraISO(), alvo, tipo, texto, status: 'aberta' });
+  const a = E.config.alvos[alvo];
+  const mesma = s => s.alvo === alvo && s.tipo === tipo && s.nivel === a.nivel && s.fase === a.fase;
+  if (E.sugestoes.some(s => mesma(s) && (s.status === 'aberta' || s.status === 'ignorada'))) return;
+  E.sugestoes.push({ id: novoId(), ts: agoraISO(), alvo, tipo, texto, status: 'aberta', nivel: a.nivel, fase: a.fase });
+}
+// Mudou o nível, a fase ou desligou o alvo: a sugestão aberta perde a validade.
+function expirarSugestoes() {
+  for (const s of E.sugestoes) {
+    if (s.status !== 'aberta') continue;
+    const a = E.config.alvos[s.alvo];
+    if (!a || !ALVOS[s.alvo] || !a.ativo || (s.nivel !== undefined && (a.nivel !== s.nivel || a.fase !== s.fase))) s.status = 'desatualizada';
+  }
 }
 function gerarSugestoes() {
   const crit = E.config.criterio;
+  expirarSugestoes();
   for (const [alvo, a] of Object.entries(E.config.alvos)) {
-    if (!a.ativo) continue;
+    if (!ALVOS[alvo] || !a.ativo) continue;
     const nome = ALVOS[alvo].nome;
-    const r = resumoPorSessao(alvo).filter(x => x.fase === a.fase);
+    // só contam as sessões no nível e na fase de agora
+    const r = resumoPorSessao(alvo).filter(x => x.fase === a.fase && x.nivel === a.nivel);
     if (a.fase === 'linha-de-base' && r.length) {
       sugerir(alvo, 'comecar-ensino', `Linha de base de "${nome}" registrada: ${r[r.length - 1].pct}% sozinha. Começar o ensino?`);
     }
@@ -929,7 +1045,7 @@ function gerarSugestoes() {
 }
 function tratarSugestao(id, aceitar) {
   const s = E.sugestoes.find(x => x.id === id);
-  if (!s) return;
+  if (!s || !ALVOS[s.alvo] || !E.config.alvos[s.alvo]) return;
   if (aceitar) {
     const nome = ALVOS[s.alvo].nome, a = E.config.alvos[s.alvo];
     if (s.tipo === 'comecar-ensino') alterarConfig(`${nome}: linha de base → ensino (sugestão aceita)`, c => { c.alvos[s.alvo].fase = 'ensino'; });
@@ -1037,6 +1153,7 @@ function telaPin(modo) {
 const ABAS_PSI = [
   { id: 'testar', nome: 'Como testar', render: abaTestar },
   { id: 'crianca', nome: 'Criança', render: abaCrianca },
+  { id: 'lugares', nome: 'Lugares', render: p => abaLugares(p) }, // abaLugares vem de lugares.js, que carrega depois
   { id: 'alvos', nome: 'Alvos', render: abaAlvos },
   { id: 'ensino', nome: 'Ensino', render: abaEnsino },
   { id: 'reforco', nome: 'Recompensa', render: abaReforco },
@@ -1122,9 +1239,10 @@ function ligarCampos(painel, aoMudar) {
 
 function abaTestar(p) {
   p.innerHTML = `<h2>Como testar esta versão</h2>
-    <p>Esta é a versão de homologação da Ilha do Farol, só com a <b>Vila Conversa</b>. Serve para o psicólogo experimentar o jogo e a configuração e dizer o que mudaria. Não é tratamento.</p>
+    <p>Esta é a versão de homologação da Ilha do Farol, com os <b>oito lugares da ilha</b>. Serve para o psicólogo experimentar o jogo e a configuração e dizer o que mudaria. Não é tratamento.</p>
     <div class="bloco"><ol class="lista-passos">
       <li>Na aba <b>Criança</b>, coloque um apelido e o tema de interesse.</li>
+      <li>Na aba <b>Lugares</b>, veja quais lugares estão abertos. Com "A criança escolhe no mapa" ligado, dá para visitar um lugar por sessão; desligado, vale o plano da sessão.</li>
       <li>Na aba <b>Alvos</b>, ligue os alvos que quer ver e escolha o nível. Para ver a linha de base, toque em "Fazer linha de base".</li>
       <li>Volte ao jogo e jogue uma sessão como se fosse a criança. Erre de propósito algumas vezes e, em outras, espere sem tocar: assim aparece a escada de ajuda.</li>
       <li>Toque no botão <b>Pausa</b> no meio de uma tarefa.</li>
@@ -1134,7 +1252,7 @@ function abaTestar(p) {
       <li>Na aba <b>Aparelho</b>, crie um PIN dos pais e entre com ele para ver o que os pais enxergam.</li>
     </ol></div>
     <div class="bloco"><h3>O que ainda é provisório</h3>
-      <p>Só um lugar da ilha. A arte desta versão já é a definitiva desta fase, criada com IA em alta definição. A voz ainda é a sintética do próprio aparelho: a voz definitiva entra na próxima versão. Os dados ficam só neste aparelho.</p>
+      <p>A arte desta versão já é a definitiva desta fase, criada com IA em alta definição. A voz ainda é a sintética do próprio aparelho: a voz definitiva entra depois. Os dados e as fotos das Histórias Minhas ficam só neste aparelho.</p>
       <p>Anote o que mudaria e envie para quem mandou o link. O roteiro completo está em <a href="../">Ilha do Farol, roteiro</a>.</p></div>`;
 }
 
@@ -1148,7 +1266,10 @@ function abaCrianca(p) {
 }
 
 function abaAlvos(p) {
-  const blocos = Object.entries(ALVOS).map(([k, al]) => {
+  let lugarAnterior = null;
+  const blocos = alvosOrdenados().map(([k, al]) => {
+    const cab = al.lugar !== lugarAnterior ? `<h3 class="grupo-lugar">${LUGARES[al.lugar].nome}${E.config.lugares[al.lugar].aberto ? '' : ' (fechado)'}</h3>` : '';
+    lugarAnterior = al.lugar;
     const a = E.config.alvos[k];
     const r = resumoPorSessao(k).slice(-4);
     const prog = E.config.ensino.ordem === 'maior-menor' && a.fase === 'ensino'
@@ -1158,7 +1279,7 @@ function abaAlvos(p) {
       a.fase !== 'ensino' ? `<button class="botao-p" data-fase="ensino" data-alvo="${k}">${a.fase === 'aprendido' ? 'Voltar ao ensino' : 'Começar ensino'}</button>` : '',
       a.fase !== 'aprendido' ? `<button class="botao-p" data-fase="aprendido" data-alvo="${k}">Declarar aprendido</button>` : '',
     ].join('');
-    return `<article class="bloco cartao-alvo"><header><h3>${al.nome}</h3><span class="fase ${a.ativo ? a.fase : 'desligado'}">${a.ativo ? FASES[a.fase] : 'Desligado'}</span></header>
+    return cab + `<article class="bloco cartao-alvo"><header><h3>${al.nome}</h3><span class="fase ${a.ativo ? a.fase : 'desligado'}">${a.ativo ? FASES[a.fase] : 'Desligado'}</span></header>
       <p>${al.desc}</p>
       ${campo({ caminho: `alvos.${k}.ativo`, rotulo: 'Ligado', tipo: 'toggle' })}
       ${campo({ caminho: `alvos.${k}.nivel`, rotulo: 'Nível', tipo: 'select', opcoes: [[1, '1: sem distrator'], [2, '2: um distrator'], [3, '3: dois distratores']] })}
@@ -1166,7 +1287,7 @@ function abaAlvos(p) {
       <p class="resumo">${r.length ? 'Últimas sessões, sozinha: ' + r.map(x => `${x.pct}%`).join(' · ') : 'Ainda sem sessões com este alvo.'}</p>${prog}
       <div class="linha-botoes">${botoes}</div></article>`;
   }).join('');
-  p.innerHTML = `<h2>Alvos da Vila Conversa</h2><p>Os outros sete lugares da ilha entram nas próximas versões. Na linha de base, o jogo não dá dica e responde de forma neutra; a criança ganha uma concha por participar.</p>${blocos}`;
+  p.innerHTML = `<h2>Alvos com acerto</h2><p>Os alvos de cada lugar. Enseada Calma, Clareira do Encontro e Mirante dos Tesouros não têm resposta certa: registram atividade (veja a aba Dados). Na linha de base, o jogo não dá dica e responde de forma neutra; a criança ganha uma concha por participar.</p>${blocos}`;
   ligarCampos(p, () => telaAdulto('alvos'));
   $$('[data-fase]', p).forEach(b => b.addEventListener('click', () => {
     const k = b.dataset.alvo, f = b.dataset.fase, antes = E.config.alvos[k].fase;
@@ -1181,7 +1302,6 @@ function abaEnsino(p) {
     ${campo({ caminho: 'ensino.ordem', rotulo: 'Ordem das dicas', tipo: 'select', opcoes: [['menor-maior', 'Da menor para a maior ajuda'], ['maior-menor', 'Da maior para a menor ajuda']], ajuda: 'Na segunda opção, o jogo começa com ajuda total e tira um degrau quando a criança acerta 80% sem erro numa sessão.' })}
     ${campo({ caminho: 'ensino.atraso', rotulo: 'Espera antes de cada dica', tipo: 'range', min: 0, max: 10, sufixo: 's', ajuda: 'Atraso de tempo. Com 0 segundo, a ajuda vem junto com a instrução.' })}
     ${campo({ caminho: 'ensino.progressivo', rotulo: 'Espera crescente', tipo: 'toggle', ajuda: 'Começa em 0, vai para a metade e chega ao valor acima, a cada duas sessões com o alvo.' })}
-    ${campo({ caminho: 'ensino.tentativas', rotulo: 'Tarefas por sessão', tipo: 'range', min: 3, max: 12 })}
     ${campo({ caminho: 'ensino.faceis', rotulo: 'Itens fáceis antes de cada novo', tipo: 'select', opcoes: [[0, 'nenhum'], [1, '1'], [2, '2'], [3, '3']], ajuda: 'Momento comportamental. Usa os alvos já aprendidos; sem eles, "toca na concha".' })}
     ${campo({ caminho: 'ensino.semErro', rotulo: 'Aprendizagem sem erro', tipo: 'toggle', ajuda: 'Depois de um erro, vai direto para a ajuda total. Desligado, vai para o modelo do Lume.' })}
     </div>
@@ -1282,15 +1402,16 @@ function graficoAlvo(alvo) {
 function abaDados(p) {
   const abertas = E.sugestoes.filter(s => s.status === 'aberta' || s.status === 'info');
   const sessoes = E.sessoes.slice().reverse();
-  const alvosComDados = Object.keys(ALVOS).filter(k => E.config.alvos[k].ativo || resumoPorSessao(k).length);
+  const alvosComDados = alvosOrdenados().map(([k]) => k).filter(k => (E.config.alvos[k] && E.config.alvos[k].ativo) || resumoPorSessao(k).length);
   p.innerHTML = `<h2>Dados</h2>
     <div class="bloco"><h3>Sugestões do jogo</h3>
       ${abertas.length ? abertas.map(s => `<div class="sugestao ${s.status === 'info' ? 'info' : ''}"><p>${esc(s.texto)}</p><div class="linha-botoes">
         ${s.status === 'info' ? `<button class="botao-p" data-sug="${s.id}" data-ok="0">Entendi</button>` : `<button class="botao-p cheio" data-sug="${s.id}" data-ok="1">Aceitar</button><button class="botao-p" data-sug="${s.id}" data-ok="0">Ignorar</button>`}</div></div>`).join('')
         : '<p class="vazio">Nenhuma sugestão aberta. Elas aparecem depois das sessões.</p>'}
     </div>
-    ${alvosComDados.map(k => `<div class="bloco"><h3>${ALVOS[k].nome}</h3>${graficoAlvo(k)}
+    ${alvosComDados.map(k => `<div class="bloco"><h3>${LUGARES[ALVOS[k].lugar].nome}: ${ALVOS[k].nome}</h3>${graficoAlvo(k)}
       <p class="legenda-graf">○ linha de base · ● ensino · ■ manutenção · tracejado vertical: ajuste de configuração · tracejado horizontal: critério. Toque num ponto para ler o valor.</p></div>`).join('')}
+    ${blocoAtividades()}
     <div class="bloco"><h3>Sessões</h3>
       ${sessoes.length ? `<div class="tabela"><table><thead><tr><th>Início</th><th>Duração</th><th>Como estava</th><th>Tarefas</th><th>Sozinha</th><th>Conchas</th><th>Pausas</th><th>Fim</th></tr></thead><tbody>
       ${sessoes.map(s => {
@@ -1300,12 +1421,12 @@ function abaDados(p) {
       }).join('')}</tbody></table></div>` : '<p class="vazio">Nenhuma sessão ainda.</p>'}
     </div>
     <div class="bloco"><h3>Baixar em planilha</h3><p class="ajuda">Arquivos CSV com ponto e vírgula, que abrem direto no Excel.</p>
-      <div class="linha-botoes"><button class="botao-p" id="csvTent">Tentativas</button><button class="botao-p" id="csvSess">Sessões</button><button class="botao-p" id="csvAbc">Registros ABC</button><button class="botao-p" id="csvConfig">Histórico de ajustes</button></div></div>
+      <div class="linha-botoes"><button class="botao-p" id="csvTent">Tentativas</button><button class="botao-p" id="csvSess">Sessões</button><button class="botao-p" id="csvAbc">Registros ABC</button><button class="botao-p" id="csvEventos">Atividades</button><button class="botao-p" id="csvConfig">Histórico de ajustes</button></div></div>
     <div class="bloco"><h3>Histórico de ajustes</h3><div class="tabela"><table><thead><tr><th>Versão</th><th>Data</th><th>Quem</th><th>O que mudou</th></tr></thead><tbody>
       ${E.historicoConfig.slice().reverse().slice(0, 40).map(h => `<tr><td>${h.versao}</td><td>${fmtData(h.ts)}</td><td>${{ psi: 'psicólogo', pais: 'pais', sistema: 'sistema' }[h.papel] || h.papel}</td><td>${esc(h.resumo)}</td></tr>`).join('')}</tbody></table></div></div>`;
   $$('[data-sug]', p).forEach(b => b.addEventListener('click', () => { tratarSugestao(b.dataset.sug, b.dataset.ok === '1'); aviso('Salvo'); telaAdulto('dados'); }));
   $$('.alvo-toque', p).forEach(c => c.addEventListener('click', () => { const l = c.closest('.bloco').querySelector('[data-leitura]'); if (l) l.textContent = c.dataset.info; }));
-  on('#csvTent', exportarTentativas); on('#csvSess', exportarSessoes); on('#csvAbc', exportarAbc); on('#csvConfig', exportarHistorico);
+  on('#csvTent', exportarTentativas); on('#csvSess', exportarSessoes); on('#csvAbc', exportarAbc); on('#csvConfig', exportarHistorico); on('#csvEventos', exportarEventos);
 }
 
 /* ---------- aba Casa (pais e psicólogo) ---------- */
@@ -1412,6 +1533,13 @@ function abaAparelho(p) {
     on('#apagarSim', () => {
       if ($('#digApagar').value.trim().toUpperCase() !== 'APAGAR') { aviso('Digite APAGAR para confirmar'); return; }
       try { localStorage.removeItem(CHAVE); } catch (e) { /* ok */ }
+      // a conexão aberta com as fotos precisa fechar antes, senão o navegador segura a exclusão
+      try { if (BANCO.db) BANCO.db.close(); } catch (e) { /* ok */ }
+      BANCO.db = null;
+      try {
+        const q = indexedDB.deleteDatabase('ilhaFarol');
+        q.onerror = q.onblocked = () => aviso('As fotos só saem de vez quando o jogo for fechado e aberto de novo');
+      } catch (e) { /* ok */ }
       E = estadoPadrao(); salvar(); papel = null; telaInicio();
     });
   });
@@ -1439,8 +1567,8 @@ function baixar(nome, conteudo, tipo) {
 function exportarTentativas() {
   const nSessao = new Map(E.sessoes.map((s, i) => [s.id, i + 1]));
   baixar(`ilha-do-farol-tentativas-${hojeChave()}.csv`, csv([
-    ['sessao', 'data_hora', 'alvo', 'item_facil', 'fase', 'nivel', 'correta', 'sozinha', 'errou_antes', 'sem_resposta', 'maior_degrau_de_ajuda', 'latencia_ms', 'espera_s', 'ordem_das_dicas', 'versao_da_configuracao'],
-    ...E.tentativas.map(t => [nSessao.get(t.sessao) || '', fmtData(t.ts), t.alvo === 'facil' ? 'toca na concha' : ALVOS[t.alvo].nome, t.facil, FASES[t.fase] || t.fase, t.nivel, t.correta, t.sozinha, t.erro, t.semResposta, t.degrau, t.latenciaMs, t.atrasoS, t.ordem, t.configVersao]),
+    ['sessao', 'data_hora', 'alvo', 'item_facil', 'fase', 'nivel', 'correta', 'sozinha', 'errou_antes', 'sem_resposta', 'maior_degrau_de_ajuda', 'latencia_ms', 'espera_s', 'ordem_das_dicas', 'versao_da_configuracao', 'lembrete_na_escolha_livre'],
+    ...E.tentativas.map(t => [nSessao.get(t.sessao) || '', fmtData(t.ts), t.alvo === 'facil' ? 'toca na concha' : ALVOS[t.alvo] ? `${LUGARES[ALVOS[t.alvo].lugar].nome}: ${ALVOS[t.alvo].nome}` : t.alvo, t.facil, FASES[t.fase] || t.fase, t.nivel, t.correta, t.sozinha, t.erro, t.semResposta, t.degrau, t.latenciaMs, t.atrasoS, t.ordem, t.configVersao, !!t.lembrete]),
   ]), 'text/csv;charset=utf-8');
 }
 function exportarSessoes() {
@@ -1486,6 +1614,7 @@ function todasAsFalas() {
   for (const cor of Object.keys(CORES_CONCHA)) add(FALA.q2ModeloCor(cor));
   for (let n = 1; n <= 40; n++) add(FALA.tesouro(n));
   for (const a of Object.keys(ATIVIDADES)) add(FALA.tchau(a));
+  falasDosLugares().forEach(add);
   return lista;
 }
 
@@ -1504,4 +1633,4 @@ async function iniciar() {
   }
   telaInicio();
 }
-iniciar();
+window.addEventListener('DOMContentLoaded', iniciar);

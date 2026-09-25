@@ -197,6 +197,7 @@ img.foto{max-width:100%}
 .controle input[type=range]{width:min(100%,280px);accent-color:var(--teal)}
 .controle output{font-variant-numeric:tabular-nums;font-weight:600;min-width:4ch}
 .ajuda{font-size:.85rem;color:var(--tinta2)}
+.aviso-lugar{background:var(--ambar-claro);color:var(--ambar-tinta);border-radius:10px;padding:6px 12px;font-size:.85rem;font-weight:600;margin:4px 0 8px}
 .interruptor{position:relative;display:inline-block;width:52px;height:30px}
 .interruptor input{opacity:0;width:100%;height:100%;margin:0;position:absolute;cursor:pointer;z-index:1}
 .interruptor span{position:absolute;inset:0;border-radius:30px;background:#C9D3D6;transition:background .2s}
@@ -254,4 +255,78 @@ textarea{font:inherit;border-radius:10px;border:1px solid var(--linha);padding:8
   .btn-pausa span{display:none}
   .cena{padding-top:96px;gap:2%}
   .opcoes{min-height:170px}
+}
+
+/* ---------- Versão 0.3: os oito lugares ---------- */
+.tela.sem-rodape{grid-template-rows:auto minmax(0,1fr)}
+.sem-rodape .opcoes{display:none}
+.historia .legenda{display:none}
+.mapa-ilha{align-self:stretch;width:min(100%,820px);display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:92px 8px 16px;overflow:auto;align-content:start}
+.lugar-botao{background:var(--superficie);border:3px solid #DCD4BF;border-radius:20px;padding:10px;display:grid;justify-items:center;gap:6px;font-weight:600;font-size:.95rem;cursor:pointer;min-height:150px;text-align:center}
+.lugar-botao img,.lugar-botao svg{width:100%;height:96px;object-fit:contain}
+.rosto-grande{display:flex;align-items:flex-end;justify-content:center}
+.rosto-grande img,.rosto-grande svg{width:clamp(150px,34vw,260px);height:auto;max-height:42vh;object-fit:contain}
+.cartas.pequenas{gap:10px}
+.cartas.pequenas .carta{width:clamp(84px,21vw,120px);min-height:106px;border-top-width:9px;padding:8px 6px}
+.cartas.pequenas .carta img,.cartas.pequenas .carta svg{height:60px}
+.cartas.pequenas .carta span{font-size:.85rem}
+.faixa{flex-wrap:wrap;justify-content:center}
+.faixa.longa .slot{width:54px;height:54px}
+.faixa.longa .slot img,.faixa.longa .slot svg{width:44px;height:44px}
+.slot.pre{opacity:.75}
+.agenda-mini{display:flex;gap:8px;align-self:center}
+.mini-cartao{width:clamp(70px,16vw,110px);background:var(--superficie);border-radius:14px;padding:6px}
+.mini-cartao img,.mini-cartao svg{width:100%;height:auto}
+.mini-cartao.mudou{box-shadow:0 0 0 4px var(--ambar-claro),0 0 0 7px var(--ambar)}
+.livro{align-self:center;width:min(94%,560px);padding-top:16px}
+.livro .pagina{background:var(--superficie);border-radius:18px;padding:8px;box-shadow:0 2px 0 var(--linha)}
+.pagina-img{width:100%;height:auto;max-height:52vh;object-fit:contain;border-radius:12px;display:block;margin:0 auto}
+.pagina.fim{display:grid;place-items:center;align-content:center;gap:6px;min-height:220px;font-size:1.6rem}
+.pagina.fim span{font-size:1rem;color:var(--tinta2)}
+.pagina.pequena{width:min(62vw,300px)}
+.cena.livro-q{align-items:center;justify-content:center}
+.texto-pagina{margin:0;font-size:clamp(1.05rem,2.6vw,1.35rem);text-align:center;max-width:640px;line-height:1.4}
+.contador{font-weight:700;font-size:1.3rem;margin:0;font-variant-numeric:tabular-nums}
+.segurar{position:relative;overflow:hidden;touch-action:none}
+.segurar .enche{position:absolute;inset:0 auto 0 0;width:0;background:rgba(255,255,255,.35)}
+.segurar.segurando .enche{width:100%;transition:width 2s linear}
+.pulando .lume{animation:pulo 1s ease-in-out infinite}
+.tela.silencio{background:linear-gradient(#18424c,#0f2a31)}
+.silencio .opcoes{background:#16323B;border-top-color:#16323B;color:#E1EDEB}
+.silencio .contador{color:#E1EDEB;font-weight:500}
+.barco{position:relative;width:min(80vw,380px);aspect-ratio:3/2;align-self:center;margin-bottom:4%}
+.peca-barco{position:absolute}
+.peca-barco img{width:100%;height:auto;display:block}
+.peca-barco.barco-casco{left:10%;bottom:0;width:80%;z-index:3}
+.peca-barco.barco-mastro{left:48%;bottom:24%;height:72%;z-index:1}
+.peca-barco.barco-mastro img{height:100%;width:auto}
+.peca-barco.barco-vela{left:52%;bottom:33%;width:30%;z-index:2}
+.peca-barco.barco-bandeira{left:50%;top:0;width:12%;z-index:2}
+.peca-barco.barco-janela{left:24%;bottom:12%;width:11%;z-index:4}
+.peca-barco.barco-boia{left:66%;bottom:8%;width:13%;z-index:4}
+.barco.pronto{animation:boia 3.2s ease-in-out infinite}
+.vez{font-weight:700;font-size:1.2rem;margin:0}
+.vez.crianca{color:var(--teal)}
+.vez.adulto{color:var(--ambar-tinta)}
+.faixa-adulto{width:min(100%,720px);background:var(--fundo);border:1px dashed var(--linha);border-radius:12px;padding:8px 10px;display:grid;gap:6px;font-size:.82rem;color:var(--tinta2)}
+.faixa-adulto .botao-p{min-height:38px;font-size:.8rem}
+.carta.marcada{box-shadow:0 0 0 6px var(--teal-claro),0 0 0 9px var(--teal)}
+.museu-grande{align-self:center;background:var(--superficie);border-radius:18px;padding:14px;display:grid;gap:10px;width:min(94%,560px);margin-top:70px}
+.museu-grande .prateleira{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px}
+.peca-museu{border:2px solid #DCD4BF;border-radius:14px;background:var(--superficie);padding:6px;cursor:pointer;transition:transform .3s ease,box-shadow .3s ease}
+.peca-museu img,.peca-museu svg{width:100%;height:60px;object-fit:contain}
+.peca-museu.escolhida{box-shadow:0 0 0 6px var(--ambar-claro),0 0 0 9px var(--ambar);transform:scale(1.05)}
+.grupo-lugar{margin:10px 0 -6px;color:var(--teal)}
+.cabeca-lugar{display:flex;gap:12px;align-items:center}
+.cabeca-lugar img,.cabeca-lugar svg{width:56px;height:56px;object-fit:contain}
+.bloco-interno{display:grid;gap:8px;border-top:1px solid var(--linha);padding-top:10px}
+.linha-historia{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pagina-editor .previa img{max-width:220px;border-radius:10px}
+.calmo .pulando .lume,.calmo .barco.pronto{animation:none}
+@media (max-width:600px){
+  .faixa .slot{width:56px;height:56px}
+  .faixa .slot img,.faixa .slot svg{width:44px;height:44px}
+  .mapa-ilha{grid-template-columns:repeat(2,minmax(0,1fr));padding-top:96px}
+  .lugar-botao{min-height:130px}
+  .lugar-botao img,.lugar-botao svg{height:78px}
 }

@@ -1,0 +1,117 @@
+{
+ "folha-lugares": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Six separate small place icons for a children's island map, in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: a small sandy beach corner with a seashell and a gentle wave; a calm little cove with a soft curling teal wave and a small round rock; a small stand shaped like an open storybook with a teal striped awning; a small wooden workbench with a toolbox on top; a round grassy clearing with two small round trees and a picnic blanket; a little grassy hill lookout with a small telescope on top. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "fifi": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. A new character drawn in exactly the same art style as the reference image (do not draw the octopus): Fifi, a friendly chubby baby seal. Soft light grey body with a lighter belly, small flippers, big friendly round eyes like the reference character, small whiskers, gentle smile. Sitting, three-quarter view facing left, full body, centered. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "1:1",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "folha-bolota": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Two versions of the same new character side by side with a very wide empty gap between them, drawn in exactly the same art style as the reference image (do not draw the octopus): Bolota, a small friendly pufferfish, soft pastel yellow with a lighter belly and big round friendly eyes like the reference character. Left: Bolota calm and small, gentle smile, facing left. Right: the same Bolota puffed up into a big round ball with small soft rounded spikes, cheeks puffed, a little grumpy but still cute, facing left. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "16:9",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "folha-ferramentas": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Five separate simple calm-down tool icons for children, in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: one soft rounded teal wave; two small hands squeezing a soft ball of pastel play dough; a pair of small sneakers with two soft motion lines (jumping); soft teal over-ear headphones; a cozy corner with a big soft cushion and a small folded blanket. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "folha-emocoes": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Six separate character portraits in one horizontal row, same size, evenly spaced with very wide empty gaps between them, using exactly the three characters from the reference images with the same colors and style (the turtle Tuca, the crab Caco with teal headphones, the seagull Gigi). Each shows one clear, easy-to-read emotion for young children. From left to right: Tuca happy with a big smile; Tuca sad with a small downturned mouth; Caco a little angry with lowered eyebrows and a pout; Caco scared with wide eyes and a small round mouth; Gigi happy with a smile; Gigi sad with droopy eyes and a small downturned beak. No tears, nothing scary. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "tuca",
+   "caco",
+   "gigi"
+  ]
+ },
+ "folha-rotina": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Four separate simple daily-routine icons for a visual schedule, in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: a small bed with a smiling sun rising behind it (waking up); a toothbrush with a line of toothpaste; breakfast with a cup of milk and a slice of bread; a folded light blue t-shirt. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "folha-maos": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Five separate step icons showing how to wash hands, for a children's visual step list, in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus), with simple child hands. From left to right: a hand turning on a faucet with water starting to run; two hands under running water; soap foam in the palm of one hand; two hands rubbing together with soft bubbles; two hands drying with a small towel. No numbers. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "folha-dentes": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Four separate step icons showing how to brush teeth, for a children's visual step list, in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: toothpaste being squeezed onto a toothbrush; a smiling mouth with clean teeth and a toothbrush brushing them; a small sink with a little water splash (spitting out); a small cup of water (rinsing the mouth). No numbers. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "folha-vestir": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Four separate clothing icons for a children's getting-dressed step list, in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: a light blue t-shirt; a pair of soft green shorts; a pair of small socks; a pair of small sneakers. No numbers. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "historia-festa-1": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Three separate square illustration panels side by side with wide pure white gutters between them, like pages of a calm children's picture book, same art style and same characters as the reference images (Lume the orange baby octopus, Gigi the seagull, Caco the crab with teal headphones, Tuca the turtle). Panel 1: Lume at the door of the lighthouse happily holding a small invitation card decorated with a balloon. Panel 2: a small birthday party on the beach with a few soft balloons, a cake on a blanket, Gigi, Caco and Tuca smiling. Panel 3: everyone singing loudly with open mouths and Lume looking a little worried. Soft simple backgrounds, low detail, no text, no letters.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo",
+   "gigi",
+   "caco",
+   "tuca"
+  ]
+ },
+ "historia-festa-2": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Three separate square illustration panels side by side with wide pure white gutters between them, like pages of a calm children's picture book, same art style and same characters as the reference images (Lume the orange baby octopus, Gigi the seagull, Caco the crab with teal headphones, Tuca the turtle). Panel 1: Lume putting on soft teal over-ear headphones, calmer. Panel 2: Lume resting in a quiet shady spot under a small palm tree, holding a small card with a pause symbol, Caco sitting calmly beside. Panel 3: Lume happy eating a small slice of cake with Gigi, Caco and Tuca at the beach party. Soft simple backgrounds, low detail, no text, no letters.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo",
+   "gigi",
+   "caco",
+   "tuca"
+  ]
+ },
+ "historia-medico-1": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Three separate square illustration panels side by side with wide pure white gutters between them, like pages of a calm children's picture book, same art style and same characters as the reference images (Lume the orange baby octopus, Tuca the turtle). Panel 1: Lume and Tuca walking together along the beach to a small friendly clinic with a teal door. Panel 2: a calm waiting room with two chairs and a small toy, Lume sitting next to Tuca. Panel 3: a kind light blue whale doctor with a stethoscope gently listening to Lume's chest. Soft simple backgrounds, low detail, no needles, no text, no letters.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo",
+   "tuca"
+  ]
+ },
+ "historia-medico-2": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Three separate square illustration panels side by side with wide pure white gutters between them, like pages of a calm children's picture book, same art style and same characters as the reference images (Lume the orange baby octopus, Tuca the turtle, and a kind light blue whale doctor). Panel 1: the whale doctor gently looking into Lume's open mouth with a small soft light. Panel 2: Lume holding Tuca's flipper for comfort and breathing calmly. Panel 3: Lume smiling with a small round star sticker on the head, waving goodbye to the doctor. Soft simple backgrounds, low detail, no needles, no text, no letters.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo",
+   "tuca"
+  ]
+ },
+ "folha-barco": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Six separate parts of a simple toy sailboat, in one horizontal row, similar size, evenly spaced with very wide empty gaps between them, drawn in the same art style as the reference image (do not draw the octopus). From left to right: a small rounded wooden boat hull seen from the side; a straight wooden mast; a triangular cream sail with a teal stripe; a small amber triangular flag; a round porthole window with a wooden rim; a red and white lifebuoy ring. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo"
+  ]
+ },
+ "folha-meujeito": {
+  "prompt": "No text, no letters, no numbers, no watermark, no ground shadow, no sparkles, no glitter, no busy details. Soft flat 2D vector illustration in a calm children's picture-book style, the same art style as the reference image: thick rounded simple shapes, very low detail, soft matte pastel colors, gentle light highlights, no hard outlines. Six separate small illustrations of the exact same character from the reference image (Lume, the orange baby octopus, same colors and shape), in one horizontal row, same size, evenly spaced with very wide empty gaps between them. From left to right: Lume jumping happily in the air; Lume hiding its face behind its tentacles; Lume hugging a soft round pillow; Lume crying a little with one small tear; Lume sitting very still and quiet with calm eyes; Lume waving all its tentacles energetically. Each clear and easy to read for young children. Isolated on a pure flat white background (#FFFFFF) with a generous empty margin all around.",
+  "aspecto": "21:9",
+  "referencias": [
+   "estilo"
+  ]
+ }
+}

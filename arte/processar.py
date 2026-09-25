@@ -26,8 +26,10 @@ ICONES = RAIZ / "docs" / "jogo" / "icones"
 REVISAO = RAIZ / "arte-fonte" / "revisao.png"
 
 TEAL = (42, 119, 120)
-LADO_MAXIMO = {"personagem": 900, "cenario": 1000, "folha": 420, "logo": 1400, "fundo": 1920}
-LADO_ESPECIAL = {"barraca": 900, "folha-cartoes": 360, "folha-atividades": 360, "folha-temas": 360}
+LADO_MAXIMO = {"personagem": 900, "cenario": 1000, "folha": 420, "logo": 1400, "fundo": 1920, "paineis": 1100}
+LADO_ESPECIAL = {"barraca": 900, "folha-cartoes": 360, "folha-atividades": 360, "folha-temas": 360,
+                 "folha-bolota": 800, "folha-emocoes": 700, "folha-meujeito": 500, "folha-rotina": 360,
+                 "folha-maos": 360, "folha-dentes": 360, "folha-vestir": 360, "folha-ferramentas": 360}
 SUAVE = 36  # distância do branco em que a borda fica totalmente opaca
 
 
@@ -112,9 +114,59 @@ def dividir(im: Image.Image, n: int):
         i = int(np.argmin(folgas))
         faixas[i] = [faixas[i][0], faixas[i + 1][1]]
         del faixas[i + 1]
+    ocupacao = (alfa > 24).sum(axis=0)
+    while len(faixas) < n:
+        # duas figuras encostadas: parte a faixa mais larga onde a ocupação é menor (o ponto de contato)
+        i = int(np.argmax([x1 - x0 for x0, x1 in faixas]))
+        x0, x1 = faixas[i]
+        m0, m1 = x0 + (x1 - x0) // 5, x1 - (x1 - x0) // 5
+        corte = m0 + int(np.argmin(ocupacao[m0:m1]))
+        faixas[i:i + 1] = [[x0, corte], [corte + 1, x1]]
     if len(faixas) != n:
         raise ValueError(f"esperava {n} peças, achei {len(faixas)}")
     return [recortar(im.crop((x0, 0, x1 + 1, im.height))) for x0, x1 in faixas]
+
+
+def corridas(marcas) -> list:
+    """Trechos seguidos de True num vetor: [[início, fim], ...]."""
+    trechos, dentro, inicio = [], False, 0
+    for i, v in enumerate(marcas):
+        if v and not dentro:
+            dentro, inicio = True, i
+        elif not v and dentro:
+            dentro = False
+            trechos.append([inicio, i - 1])
+    if dentro:
+        trechos.append([inicio, len(marcas) - 1])
+    return trechos
+
+
+def dividir_paineis(im: Image.Image, n: int, apagar=None):
+    """Quadros de história lado a lado, separados por margem branca. Ficam com o fundo (sem transparência)."""
+    rgb = np.asarray(im.convert("RGB")).astype(np.float32).copy()
+    h, w, _ = rgb.shape
+    for fx0, fy0, fx1, fy1 in apagar or []:
+        # pinta por cima de texto que a IA escreveu, com a cor da placa em volta
+        x0, y0, x1, y1 = int(fx0 * w), int(fy0 * h), int(fx1 * w), int(fy1 * h)
+        borda = np.concatenate([rgb[y0 - 4:y0 - 1, x0:x1].reshape(-1, 3), rgb[y1 + 1:y1 + 4, x0:x1].reshape(-1, 3)])
+        rgb[y0:y1, x0:x1] = np.median(borda, axis=0)
+    conteudo = (255.0 - rgb).max(axis=2) > 14
+    colunas = corridas(conteudo.sum(axis=0) > 0.3 * h)
+    colunas = [c for c in colunas if c[1] - c[0] > 0.05 * w]
+    while len(colunas) > n:
+        folgas = [colunas[i + 1][0] - colunas[i][1] for i in range(len(colunas) - 1)]
+        i = int(np.argmin(folgas))
+        colunas[i] = [colunas[i][0], colunas[i + 1][1]]
+        del colunas[i + 1]
+    if len(colunas) != n:
+        raise ValueError(f"esperava {n} quadros, achei {len(colunas)}")
+    quadros = []
+    base = Image.fromarray(rgb.astype(np.uint8), "RGB")
+    for x0, x1 in colunas:
+        linhas = corridas(conteudo[:, x0:x1 + 1].sum(axis=1) > 0.3 * (x1 - x0))
+        y0, y1 = linhas[0][0], linhas[-1][1]
+        quadros.append(base.crop((x0 + 3, y0 + 3, x1 - 2, y1 - 2)))  # 3 px para dentro: sem a borda borrada
+    return quadros
 
 
 def reduzir(im: Image.Image, lado: int) -> Image.Image:
@@ -200,7 +252,15 @@ def main() -> int:
         if tipo == "fundo":
             gravar(reduzir(original.convert("RGB"), lado), "fundo", mapa, fundo_opaco=True)
             continue
+        if tipo == "paineis":
+            for chave, quadro in zip(peca["chaves"], dividir_paineis(original, len(peca["chaves"]), g.get("apagar"))):
+                gravar(reduzir(quadro, lado), chave, mapa, fundo_opaco=True)
+            print(f"ok  {pid:18s} -> {', '.join(peca['chaves'])}")
+            continue
         limpo = tirar_fundo(original, tol=g.get("tolerancia", 10), buracos=g.get("buracos", False), sombra_quente=g.get("sombra_quente", False))
+        if g.get("recorte_x"):
+            fx0, fx1 = g["recorte_x"]
+            limpo = limpo.crop((int(fx0 * limpo.width), 0, int(fx1 * limpo.width), limpo.height))
         if tipo == "folha":
             partes = dividir(recortar(limpo, 0), len(peca["chaves"]))
             for chave, parte in zip(peca["chaves"], partes):
