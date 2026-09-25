@@ -4,7 +4,7 @@ Roteiro de um jogo terapêutico para crianças autistas de 4 a 10 anos. A crian�
 
 **Leitura online:** https://fleandro1234-netizen.github.io/ilha-do-farol/
 
-Situação: versão 1 do roteiro, em revisão. O jogo ainda não foi programado nem testado; as práticas citadas têm evidência, o jogo ainda não.
+Situação: roteiro na versão 2 e protótipo jogável de homologação (só a Vila Conversa) em https://fleandro1234-netizen.github.io/ilha-do-farol/jogo/. O jogo ainda não foi testado com crianças; as práticas citadas têm evidência, o jogo ainda não.
 
 ## Como atualizar
 
@@ -15,3 +15,13 @@ python gerar_site.py
 ```
 
 O script gera `docs/index.html` (servido pelo GitHub Pages) e atualiza a cópia da Área de Trabalho. Ele recusa gerar se encontrar travessão no texto.
+
+## Protótipo do jogo (`docs/jogo/`)
+
+Aplicativo web instalável, sem servidor e sem conta: tudo fica no aparelho (localStorage) e funciona sem internet depois da primeira abertura (`sw.js`).
+
+- `arte.js`: desenho provisório em SVG.
+- `img/arte.json`: mapa das imagens definitivas (geradas por IA). Quando uma chave existe, a imagem entra no lugar do desenho provisório.
+- `audio/falas.json`: mapa das falas gravadas. Sem arquivo, o jogo usa a voz sintética do aparelho. A lista completa de falas sai na área do adulto, aba Aparelho.
+- Ao mudar arquivos do jogo, subir a versão em `VERSAO` (`app.js`) e em `CACHE` (`sw.js`).
+- Teste local: `python -m http.server 8830 --directory docs` e abrir `http://localhost:8830/jogo/`.
