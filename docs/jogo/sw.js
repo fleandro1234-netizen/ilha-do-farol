@@ -1,6 +1,6 @@
 /* Ilha do Farol: funciona sem internet depois da primeira abertura.
    Estratégia: rede primeiro (a homologação recebe a versão nova na hora); sem rede, usa a cópia guardada. */
-const CACHE = 'ilha-farol-0.4.0';
+const CACHE = 'ilha-farol-0.4.1';
 const ARQUIVOS = [
   './', './index.html', './estilo.css', './arte.js', './app.js', './lugares.js', './manifest.webmanifest',
   './icones/icone-192.png', './icones/icone-512.png', './icones/icone-180.png',

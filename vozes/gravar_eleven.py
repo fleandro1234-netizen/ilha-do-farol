@@ -34,8 +34,18 @@ FFMPEG = (r"C:\Users\filipe.leandro\AppData\Local\Microsoft\WinGet\Packages"
 
 VOZ = "hgTbkcw2ddnzYh66cwCI"          # Aninha - Warm, Calm and Soothing (biblioteca ElevenLabs, pt-BR verificado)
 MODELO = "eleven_multilingual_v2"      # o modelo em que o português dela é verificado
-# calma e constante: estabilidade alta, pouco exagero de estilo, ritmo um pouco mais lento
-AJUSTES = {"stability": 0.62, "similarity_boost": 0.8, "style": 0.08, "use_speaker_boost": True, "speed": 0.92}
+# calma e constante: estabilidade alta e pouco exagero de estilo. Velocidade 1,0 (a natural da voz): em 28/09/2026 a
+# psicóloga achou a gravação a 0,92 lenta e cansativa ("um tiquinho mais acelerado, pouca coisa").
+AJUSTES = {"stability": 0.62, "similarity_boost": 0.8, "style": 0.08, "use_speaker_boost": True, "speed": 1.0}
+PAUSA_MAXIMA = 0.55  # pausa entre frases dentro da mesma fala, em segundos (a voz dela chega a 1,2 s)
+# falas que precisaram de ajuste próprio na gravação de 28/09/2026 (medido: sem isso a voz muda as palavras)
+AJUSTE_POR_FALA = {
+    "Quando você fica triste, o que você faz? Pode escolher mais de um.": {"stability": 0.8},  # dizia "o que é que você faz"
+}
+# com o texto vizinho a voz embolava o começo destes itens da agenda ("e da Vila Conversa", "feiro tesouro")
+SEM_CONTEXTO = {"ir à Vila Conversa,", "ir à Clareira do Encontro,", "ver o tesouro,"}
+# o transcritor erra estas, a voz acerta: aceitas quando o transcritor ouve exatamente a variante conhecida
+ACEITA_SE_OUVIR = {"Agora: enxaguar.": "agora em xaguar", "ir à Clareira do Encontro,": "ira clareira do encontro"}
 SEMENTE = 20260928
 TAXA = 44100
 NOTA_MINIMA = 0.85
@@ -60,8 +70,9 @@ def contexto(f):
 
 def gravar(f, semente=SEMENTE):
     destino = BRUTO / f"{f['chave']}.wav"
-    corpo = {"text": f["texto"], "model_id": MODELO, "voice_settings": AJUSTES, "seed": semente,
-             "apply_text_normalization": "auto", **contexto(f)}
+    corpo = {"text": f["texto"], "model_id": MODELO, "voice_settings": {**AJUSTES, **AJUSTE_POR_FALA.get(f["texto"], {})},
+             "seed": semente, "apply_text_normalization": "auto",
+             **({} if f["texto"] in SEM_CONTEXTO else contexto(f))}
     pcm = eleven_tts.chamar("POST", f"/text-to-speech/{VOZ}?output_format=pcm_{TAXA}", corpo, aceita="*/*")
     with wave.open(str(destino), "wb") as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(TAXA); w.writeframes(pcm)
@@ -98,11 +109,38 @@ def trecho_ativo(x, taxa, limiar_db=-42):
     return int(ativos[0] * jan), int((ativos[-1] + 1) * jan)
 
 
+def encurtar_pausas(x, taxa, limiar_db=-40):
+    """Pausa entre frases acima de PAUSA_MAXIMA vira PAUSA_MAXIMA: guarda as duas metades das bordas do silêncio
+    (a respiração e o fim da palavra ficam) e tira o meio. As palavras não mudam de velocidade."""
+    jan = int(0.01 * taxa)
+    n = len(x) // jan
+    energia = np.sqrt(np.mean(x[:n * jan].reshape(n, jan) ** 2, axis=1)) + 1e-9
+    quieto = 20 * np.log10(energia / energia.max()) <= limiar_db
+    manter = int(PAUSA_MAXIMA * 100)
+    pedacos, ini, k = [], 0, 0
+    while k < n:
+        if quieto[k]:
+            fim = k
+            while fim < n and quieto[fim]:
+                fim += 1
+            if fim - k > manter and k > 0 and fim < n:  # só pausa interna, nunca as pontas
+                meio_a = (k + manter // 2) * jan
+                meio_b = (fim - (manter - manter // 2)) * jan
+                pedacos.append(x[ini:meio_a])
+                ini = meio_b
+            k = fim
+        else:
+            k += 1
+    pedacos.append(x[ini:])
+    return np.concatenate(pedacos) if len(pedacos) > 1 else x
+
+
 def tratar(f):
     """Apara o silêncio das pontas, suaviza as bordas e nivela o volume. Devolve (amostras, taxa)."""
     x, taxa = alinhar.ler_wav(BRUTO / f"{f['chave']}.wav")
     a, b = trecho_ativo(x, taxa)
     x = x[max(0, a - int(0.06 * taxa)):min(len(x), b + int(0.2 * taxa))].copy()
+    x = encurtar_pausas(x, taxa)
     ent, sai = int(0.008 * taxa), int(0.04 * taxa)
     x[:ent] *= np.linspace(0, 1, ent)
     x[-sai:] *= np.linspace(1, 0, sai)
@@ -142,8 +180,11 @@ def rodar(lista, tentativas=3):
             if f["chave"] in rel and rel[f["chave"]].get("ok") and rel[f["chave"]].get("texto") == f["texto"]:
                 continue
             r = conferir(f)
+            aceita = ACEITA_SE_OUVIR.get(f["texto"]) == r["ouvido"]
             r.update({"texto": f["texto"], "quem": f["quem"], "id": f["id"],
-                      "ok": r["nota"] >= NOTA_MINIMA and 4 <= r["letras_por_s"] <= 24})
+                      "ok": (r["nota"] >= NOTA_MINIMA or aceita) and 4 <= r["letras_por_s"] <= 24})
+            if aceita:
+                r["aceita_por"] = "o transcritor escreve outra grafia com o mesmo som"
             rel[f["chave"]] = {**rel.get(f["chave"], {}), **r, "rodada": rodada}
             if not r["ok"]:
                 ruins.append(f)

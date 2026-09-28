@@ -2,7 +2,7 @@
 /* Ilha do Farol: protótipo de homologação, lugar Vila Conversa.
    Roda inteiro no aparelho: sem servidor, sem conta e, depois da primeira abertura, sem internet. */
 
-const VERSAO = '0.4.0';
+const VERSAO = '0.4.1';
 const CHAVE = 'ilhaFarol.v1';
 const TETO_DIARIO_MIN = 30;
 const ANEIS = 5;
