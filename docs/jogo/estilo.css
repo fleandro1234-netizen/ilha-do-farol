@@ -107,6 +107,7 @@ img.foto{max-width:100%}
 .chegada{display:grid;gap:16px;justify-items:center;align-content:end;padding-top:92px;width:100%}
 .agenda-grande{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .agenda-grande div{width:92px;display:grid;justify-items:center;gap:6px;background:var(--superficie);border-radius:16px;padding:10px 6px;font-size:.85rem;font-weight:600;text-align:center}
+.agenda-grande div.falando{box-shadow:0 0 0 3px var(--ambar);background:var(--ambar-claro);transition:box-shadow .3s,background .3s}
 .agenda-grande svg{width:46px;height:46px}
 .cena-lume .lume{width:clamp(130px,28vw,210px);height:auto}
 

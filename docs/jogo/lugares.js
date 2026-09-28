@@ -851,19 +851,64 @@ function exportarEventos() {
   ]), 'text/csv;charset=utf-8');
 }
 
-/* falas fixas dos lugares, para o roteiro de gravação */
+/* Todas as falas que os lugares podem dizer, em todas as combinações: é a lista de gravação.
+   A voz gravada é achada pelo texto e por quem fala (chaveFala), então o que faltar aqui cai na voz do aparelho. */
 function falasDosLugares() {
-  const L = [fx('mapa.pergunta', 'Para onde vamos hoje? Escolha um lugar da ilha.'), fx('rot.instrucao', 'A Fifi quer montar o dia dela. O que vem primeiro?'),
-    fx('rot.fifi', 'Obrigada! Agora eu sei o que vem.', 'fifi'), fx('rot.elogio', 'Você montou o dia inteiro, na ordem certa!'),
-    fx('sur.modelo', 'Pode escolher qualquer um. Todos são bons.'), fx('sur.elogio', 'Boa escolha. A mudança chegou e a gente achou outro jeito.'),
-    fx('jeito.obrigado', 'Obrigado! Agora eu conheço o seu jeito.'), fx('hist.fim', 'Fim da história.', 'narrador'),
-    fx('bol.ajudar', 'Vamos ajudar o Bolota? Escolha uma ferramenta.'), fx('bol.melhor', 'Agora estou melhor. Obrigado!', 'bolota'),
-    fx('bol.contar', 'Obrigado por me contar.'), fx('cla.suavez', 'Sua vez! Escolha uma peça para o barco.'), fx('cla.vezadulto', 'Agora é a vez do adulto.'),
-    fx('cla.pronto', 'O barco ficou pronto! Vocês fizeram juntos.'), fx('mir.obrigado', 'Obrigado por me mostrar o seu tesouro!')];
+  const L = [fx('mapa.pergunta', 'Para onde vamos hoje? Escolha um lugar da ilha.')];
+  // Casa do Farol
+  L.push(fx('rot.instrucao', 'A Fifi quer montar o dia dela. O que vem primeiro?'), fx('rot.fifi', 'Obrigada! Agora eu sei o que vem.', 'fifi'),
+    fx('rot.elogio', 'Você montou o dia inteiro, na ordem certa!'));
+  for (const id of DIA) for (const q of ['Primeiro', 'Depois']) L.push(fx(`rot.modelo.${id}`, `${q}: ${CARTOES[id].rotulo}.`));
   for (const s of SURPRESAS) L.push(fx(`sur.${s.sai}`, `Ih! Mudança. ${s.motivo} O que a gente faz no lugar?`));
-  for (const [e, x] of Object.entries(EMOCOES)) { L.push(fx(`emo.modelo.${e}`, x.modelo)); L.push(fx(`jeito.${e}`, `Quando você fica ${x.adj}, o que você faz? Pode escolher mais de um.`)); }
-  SITUACOES.forEach((s, i) => L.push(fx(`emo.sit.${i}`, s.texto, 'narrador')));
-  for (const [id, h] of Object.entries(HISTORIAS)) h.paginas.forEach((pg, i) => L.push(fx(`hist.${id}.${i}`, pg.texto, 'narrador')));
-  for (const t of Object.values(PERGUNTAS_TEMA)) L.push(fx(`mir.pergunta.${t}`, t));
+  L.push(fx('sur.modelo', 'Pode escolher qualquer um. Todos são bons.'), fx('sur.elogio', 'Boa escolha. A mudança chegou e a gente achou outro jeito.'));
+  // Praia das Caras
+  for (const r of ROSTOS) {
+    const M = MORADORES[r.m];
+    L.push(fx(`emo.olha.${r.m}`, `Olha ${M.artigo} ${M.nome}. Como ${pronome(r.m)} está?`),
+      fx(`emo.elogio.${r.m}.${r.e}`, `Isso. ${cap(M.artigo)} ${M.nome} está ${EMOCOES[r.e].adj}.`));
+  }
+  SITUACOES.forEach((s, i) => L.push(fx(`emo.sit.${i}`, s.texto, 'narrador'), fx(`emo.sente.${s.m}`, `Como ${pronome(s.m)} se sente?`)));
+  for (const [e, x] of Object.entries(EMOCOES)) {
+    L.push(fx(`emo.modelo.${e}`, x.modelo), fx(`emo.modelo3.${e}`, `Quando isso acontece, a gente fica ${x.adj}.`),
+      fx(`emo.elogio3.${e}`, `Isso. Faz sentido ficar ${x.adj}.`), fx(`jeito.${e}`, `Quando você fica ${x.adj}, o que você faz? Pode escolher mais de um.`));
+  }
+  L.push(fx('jeito.obrigado', 'Obrigado! Agora eu conheço o seu jeito.'));
+  // Oficina dos Passos
+  for (const [alvo, t] of Object.entries(TAREFAS)) {
+    const M = MORADORES[t.quem];
+    for (const quando of ['primeiro', 'próximo']) L.push(fx(`pas.${alvo}.${quando === 'primeiro' ? 'primeiro' : 'proximo'}`, `${t.frase} Qual é o ${quando} passo?`));
+    for (const id of t.passos) L.push(fx(`pas.modelo.${id}`, `Agora: ${CARTOES[id].rotulo}.`));
+    L.push(fx(`pas.obrigado.${t.quem}`, 'Consegui! Obrigado.', t.quem), fx(`pas.elogio.${alvo}`, `Pronto! ${cap(M.artigo)} ${M.nome} conseguiu ${t.nome}, passo a passo.`));
+  }
+  // Mercado das Histórias
+  for (const [id, h] of Object.entries(HISTORIAS)) h.paginas.forEach((pg, i) => {
+    L.push(fx(`hist.${id}.${i}`, pg.texto, 'narrador'));
+    for (const q of [pg.pergunta, pg.imprevisto].filter(Boolean)) L.push(fx(`hist.${q.id}`, q.texto), fx(`hist.${q.id}.modelo`, q.modelo), fx(`hist.${q.id}.elogio`, q.elogio));
+  });
+  L.push(fx('hist.fim', 'Fim da história.', 'narrador'));
+  // Enseada Calma
+  L.push(fx('bol.A Gigi gritou perto de mim. Estou fervendo!', 'A Gigi gritou perto de mim. Estou fervendo!', 'bolota'));
+  for (const s of SITUACOES_BOLOTA) {
+    L.push(fx(`bol.sit.${s}`, s, 'narrador'));
+    for (const n of [3, 4, 5]) L.push(fx(`bol.${s} Estou ficando no ${n}.`, `${s} Estou ficando no ${n}.`, 'bolota'));
+  }
+  L.push(fx('bol.ajudar', 'Vamos ajudar o Bolota? Escolha uma ferramenta.'), fx('bol.melhor', 'Agora estou melhor. Obrigado!', 'bolota'),
+    fx('bol.ajudou', 'Essa ferramenta ajudou?'), fx('bol.contar', 'Obrigado por me contar.'),
+    fx('bol.quanto', 'Quanto isso incomoda o Bolota? Toca no termômetro.'), fx('bol.tranquilo', 'O Bolota está tranquilo. Que bom.'),
+    fx('bol.plano', 'Vamos fazer um plano. Se o Bolota ficar no 4, o que ele vai fazer?'));
+  for (const f of Object.values(FERRAMENTAS)) L.push(fx(`bol.planopronto.${f}`, `Plano pronto: se ficar no 4, ${CARTOES[f].rotulo}. Vamos treinar agora?`));
+  L.push(fx('fer.apertar', 'Aperte o botão e segure, como se fosse uma massinha. Três vezes.'), fx('fer.pular', 'Vamos pular junto com o Lume! Toque a cada pulo. Cinco pulos.'),
+    fx('fer.silencio', 'Silêncio. Vamos ficar bem quietinhos um pouco.'), fx('fer.cantinho', 'Vá até o seu cantinho calmo. Eu espero aqui.'),
+    fx('fer.ajuda', 'Chame um adulto. Pedir ajuda funciona.'), fx('fer.feito', 'Muito bem.'));
+  // Clareira do Encontro
+  L.push(fx('cla.suavez', 'Sua vez! Escolha uma peça para o barco.'), fx('cla.vezadulto', 'Agora é a vez do adulto.'),
+    fx('cla.pronto', 'O barco ficou pronto! Vocês fizeram juntos.'), fx('cla.destino', 'Para onde o barco vai?'));
+  for (const l of ['l-praia', 'l-farol', 'l-mirante']) L.push(fx(`cla.foi.${l}`, `O barco foi até ${CARTOES[l].rotulo}! Que viagem boa.`));
+  // Mirante dos Tesouros
+  for (const [tema, t] of Object.entries(TEMAS)) {
+    L.push(fx(`mir.inicio.${tema}`, `Este é o seu museu de ${t.nome}. Escolha um tesouro para me mostrar.`));
+    if (PERGUNTAS_TEMA[tema]) L.push(fx(`mir.pergunta.${tema}`, PERGUNTAS_TEMA[tema]));
+  }
+  L.push(fx('mir.obrigado', 'Obrigado por me mostrar o seu tesouro!'));
   return L;
 }

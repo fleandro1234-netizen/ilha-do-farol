@@ -2,7 +2,7 @@
 /* Ilha do Farol: protótipo de homologação, lugar Vila Conversa.
    Roda inteiro no aparelho: sem servidor, sem conta e, depois da primeira abertura, sem internet. */
 
-const VERSAO = '0.3.0';
+const VERSAO = '0.4.0';
 const CHAVE = 'ilhaFarol.v1';
 const TETO_DIARIO_MIN = 30;
 const ANEIS = 5;
@@ -76,7 +76,15 @@ const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const quemTem = m => `${cap(MORADORES[m].artigo)} ${MORADORES[m].nome}`;
 
 const FALA = {
-  chegada: etapas => fx('chegada.' + etapas.join('-'), 'Hoje a gente vai ' + listaHumana(etapas.map(e => etapaInfo(e).fala)) + '.'),
+  // a agenda é dita item por item (e cada item se acende na tela), para servir a qualquer combinação de lugares
+  chegada: etapas => {
+    const itens = etapas.map(e => etapaInfo(e).fala);
+    const partes = [FALA.chegadaHoje, ...etapas.map((e, i) => (i === etapas.length - 1 ? FALA.chegadaFim(e) : FALA.chegadaItem(e)))];
+    return { ...fx('chegada', 'Hoje a gente vai ' + listaHumana(itens) + '.'), partes };
+  },
+  chegadaHoje: fx('chegada.hoje', 'Hoje a gente vai:'),
+  chegadaItem: e => fx(`chegada.item.${e}`, `${etapaInfo(e).fala},`),
+  chegadaFim: e => fx(`chegada.fim.${e}`, `e ${etapaInfo(e).fala}.`),
   vamos: fx('chegada.vamos', 'Vamos?'),
   agoraNao: fx('chegada.agoranao', 'Tudo bem. Eu espero. Quando você quiser, toca no Jogar.'),
   comoEstou: fx('comoestou.pergunta', 'Como você está agora? Toca no termômetro.'),
@@ -124,7 +132,7 @@ const FALA = {
   tocaAqui: fx('ajuda.tocaaqui', 'Toca aqui.'),
   obrigado: fx('neutro.obrigado', 'Obrigado! Vamos para a próxima.'),
   proxima: fx('neutro.proxima', 'Tudo bem. Vamos para a próxima.'),
-  tesouro: n => fx(`tesouro.${n}`, n === 1 ? 'Você ganhou 1 concha hoje.' : `Você ganhou ${n} conchas hoje.`),
+  tesouro: n => fx(`tesouro.${n}`, n === 0 ? 'Hoje a gente brincou junto.' : n === 1 ? 'Você ganhou 1 concha hoje.' : `Você ganhou ${n} conchas hoje.`),
   farolMais: fx('tesouro.farol', 'O farol acendeu mais um pouco.'),
   peca: fx('tesouro.peca', 'Tem peça nova no museu!'),
   tchau: a => fx(`tchau.${a}`, `Tchau! Agora a tela vai dormir. Agora é hora de: ${ATIVIDADES[a].nome}.`),
@@ -302,8 +310,74 @@ function escolherVoz() {
   const nome = E.config.sensorial.voz;
   return vozesPt.find(v => v.name === nome) || vozesPt.find(v => /pt[-_]BR/i.test(v.lang)) || vozesPt[0] || null;
 }
+// Voz gravada. audio/falas.json liga a chave de cada fala ao arquivo: { chave: { f, t, q, d } }.
+// A chave sai do texto e de quem fala, então frase nova ou alterada cai na voz do aparelho, nunca num áudio de outra frase.
 let AUDIOS = {};
 async function carregarAudios() { try { const r = await fetch('audio/falas.json', { cache: 'no-cache' }); if (r.ok) AUDIOS = await r.json(); } catch (e) { AUDIOS = {}; } }
+function chaveFala(f) {
+  const s = (f.quem || 'lume') + '|' + f.texto;
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0).toString(16).padStart(8, '0') + (h1 >>> 0).toString(16).padStart(8, '0');
+}
+function audioDaFala(f) {
+  const a = AUDIOS[chaveFala(f)];
+  return a && a.t === f.texto && a.q === (f.quem || 'lume') ? a : null;
+}
+// Um só elemento de áudio para todas as falas: o iPad só deixa tocar som depois de um toque, e o elemento
+// liberado no primeiro toque continua liberado. O volume passa por um ganho do Web Audio porque o iPad
+// ignora o volume do elemento. A velocidade muda sem mudar o tom da voz.
+const voz = { el: null, ganho: null, liberado: false };
+// 0,05 s de silêncio em WAV, montado aqui mesmo: libera o som sem depender de arquivo nem de rede
+function urlSilencio() {
+  const n = 1103, buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
+  const txt = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  txt(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); txt(8, 'WAVE'); txt(12, 'fmt '); v.setUint32(16, 16, true);
+  v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 22050, true); v.setUint32(28, 44100, true);
+  v.setUint16(32, 2, true); v.setUint16(34, 16, true); txt(36, 'data'); v.setUint32(40, n * 2, true);
+  return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+}
+// Cada fala é buscada inteira (passa pelo cache do modo sem internet) e tocada da memória: o Safari pede
+// áudio aos pedaços e não aceita o arquivo inteiro vindo do cache. Guarda as 80 últimas.
+const falasNaMemoria = new Map();
+async function urlDaFala(arquivo) {
+  if (falasNaMemoria.has(arquivo)) {
+    const u = falasNaMemoria.get(arquivo);
+    falasNaMemoria.delete(arquivo); falasNaMemoria.set(arquivo, u);
+    return u;
+  }
+  const r = await fetch('audio/' + arquivo);
+  if (!r.ok) throw new Error('fala ' + r.status);
+  const u = URL.createObjectURL(await r.blob());
+  falasNaMemoria.set(arquivo, u);
+  if (falasNaMemoria.size > 80) {
+    const [k, velha] = falasNaMemoria.entries().next().value;
+    falasNaMemoria.delete(k); URL.revokeObjectURL(velha);
+  }
+  return u;
+}
+function prepararVoz() {
+  try {
+    ctxSom = ctxSom || new (window.AudioContext || window.webkitAudioContext)();
+    if (ctxSom.state !== 'running') ctxSom.resume().catch(() => {});
+  } catch (e) { /* sem Web Audio */ }
+  if (!voz.el) {
+    voz.el = new Audio();
+    voz.el.preload = 'auto';
+    try { voz.el.preservesPitch = true; voz.el.webkitPreservesPitch = true; } catch (e) { /* ok */ }
+  }
+  if (!voz.liberado) {
+    voz.liberado = true;
+    voz.el.muted = true; voz.el.src = urlSilencio();
+    voz.el.play().then(() => { voz.el.pause(); voz.el.muted = false; }).catch(() => { voz.el.muted = false; });
+  }
+}
+function ligarGanho() {
+  if (voz.ganho || !voz.el || !ctxSom || ctxSom.state !== 'running') return;
+  try { voz.ganho = ctxSom.createGain(); ctxSom.createMediaElementSource(voz.el).connect(voz.ganho).connect(ctxSom.destination); } catch (e) { voz.ganho = null; }
+}
 let audioAtual = null;
 const TOM_VOZ = { lume: 1.15, gigi: 1.3, tuca: 0.8, caco: 1.0 };
 const NOME_FALANTE = { lume: 'Lume', gigi: 'Gigi', tuca: 'Tuca', caco: 'Caco' };
@@ -325,7 +399,7 @@ function mostrarLegenda(f) {
 }
 function falar(f) {
   if (!f) return Promise.resolve();
-  mostrarLegenda(f);
+  if (!f.semLegenda) mostrarLegenda(f);
   pararFala();
   const vol = E.config.sensorial.volVoz;
   return new Promise(resolve => {
@@ -334,15 +408,26 @@ function falar(f) {
     falasPendentes.push(fim);
     // sem voz, a legenda fica o tempo de uma leitura calma
     if (!(vol > 0)) { seguranca = setTimeout(fim, Math.min(4500, 900 + f.texto.length * 45)); return; }
-    seguranca = setTimeout(fim, 2500 + f.texto.length * 110 / E.config.sensorial.velVoz);
-    const arquivo = AUDIOS[f.id];
-    if (arquivo) {
-      const a = new Audio('audio/' + arquivo);
-      audioAtual = a; a.volume = Math.min(1, vol);
-      a.onended = fim; a.onerror = () => sintetizar(f, vol, fim);
-      a.play().catch(() => sintetizar(f, vol, fim));
+    const gravada = audioDaFala(f);
+    if (gravada && voz.el && voz.liberado) {
+      // a gravação foi feita no ritmo padrão (0,95); a velocidade escolhida pelo adulto vale em cima dela
+      const ritmo = clamp(E.config.sensorial.velVoz / 0.95, 0.7, 1.3);
+      seguranca = setTimeout(fim, (gravada.d || 5) * 1000 / ritmo + 3000);
+      const el = voz.el;
+      urlDaFala(gravada.f).then(url => {
+        if (feito) return; // a fala foi cortada enquanto o arquivo vinha
+        ligarGanho();
+        el.onended = fim;
+        el.onerror = () => { if (audioAtual === el && !feito) sintetizar(f, vol, fim); };
+        el.src = url;
+        el.defaultPlaybackRate = ritmo; el.playbackRate = ritmo;
+        if (voz.ganho) { voz.ganho.gain.value = Math.min(1, vol); el.volume = 1; } else el.volume = Math.min(1, vol);
+        audioAtual = el;
+        el.play().catch(() => { if (audioAtual === el && !feito) sintetizar(f, vol, fim); });
+      }).catch(() => { if (!feito) sintetizar(f, vol, fim); });
       return;
     }
+    seguranca = setTimeout(fim, 2500 + f.texto.length * 110 / E.config.sensorial.velVoz);
     sintetizar(f, vol, fim);
   });
 }
@@ -489,7 +574,18 @@ function telaChegada() {
       <div class="cena-lume">${A.lume({ acenando: true })}</div></div>`,
     opcoes: `<div class="botoes"><button class="botao" id="vamos">Vamos</button><button class="botao claro" id="agoraNao">Agora não</button></div>`,
   });
-  falar(FALA.chegada(S.etapas)).then(() => vivo(g) && falar(FALA.vamos));
+  const chegada = FALA.chegada(S.etapas);
+  mostrarLegenda(chegada);
+  (async () => {
+    const cartoes = $$('.agenda-grande > div');
+    for (let i = 0; i < chegada.partes.length; i++) {
+      cartoes.forEach((c, j) => c.classList.toggle('falando', j === i - 1));
+      await falar({ ...chegada.partes[i], semLegenda: true });
+      if (!vivo(g)) return;
+    }
+    cartoes.forEach(c => c.classList.remove('falando'));
+    falar(FALA.vamos);
+  })();
   on('#vamos', () => { pararFala(); proximaEtapa(); });
   on('#agoraNao', () => { pararFala(); finalizarSessao('agora-nao'); telaInicio(); falar(FALA.agoraNao); });
 }
@@ -1252,7 +1348,7 @@ function abaTestar(p) {
       <li>Na aba <b>Aparelho</b>, crie um PIN dos pais e entre com ele para ver o que os pais enxergam.</li>
     </ol></div>
     <div class="bloco"><h3>O que ainda é provisório</h3>
-      <p>A arte desta versão já é a definitiva desta fase, criada com IA em alta definição. A voz ainda é a sintética do próprio aparelho: a voz definitiva entra depois. Os dados e as fotos das Histórias Minhas ficam só neste aparelho.</p>
+      <p>A arte desta versão já é a definitiva desta fase, criada com IA em alta definição. Todas as falas do jogo são gravadas, com uma voz só, suave e calma (Aninha, da biblioteca do ElevenLabs), e sempre com legenda. As Histórias Minhas, que o adulto escreve, usam a voz do próprio aparelho. Os dados e as fotos das Histórias Minhas ficam só neste aparelho.</p>
       <p>Anote o que mudaria e envie para quem mandou o link. O roteiro completo está em <a href="../">Ilha do Farol, roteiro</a>.</p></div>`;
 }
 
@@ -1351,7 +1447,7 @@ function abaSessao(p) {
     ${campo({ caminho: 'sensorial.volVoz', rotulo: 'Volume da voz', tipo: 'range', min: 0, max: 1, passo: 0.1, sufixo: '%' })}
     ${campo({ caminho: 'sensorial.volEfeitos', rotulo: 'Volume dos efeitos', tipo: 'range', min: 0, max: 1, passo: 0.1, sufixo: '%' })}
     ${campo({ caminho: 'sensorial.velVoz', rotulo: 'Velocidade da voz', tipo: 'range', min: 0.7, max: 1.2, passo: 0.05, sufixo: 'x' })}
-    ${campo({ caminho: 'sensorial.voz', rotulo: 'Voz', tipo: 'select', opcoes: vozes, ajuda: vozesPt.length ? 'Vozes deste aparelho. A voz gravada entra por cima quando existir.' : 'Este aparelho não informou vozes em português; o jogo mostra a legenda de toda fala.' })}
+    ${campo({ caminho: 'sensorial.voz', rotulo: 'Voz do aparelho', tipo: 'select', opcoes: vozes, ajuda: vozesPt.length ? 'Só para as Histórias Minhas e para frase sem gravação: as falas do jogo já são gravadas.' : 'Este aparelho não informou vozes em português; as falas gravadas tocam normalmente e toda fala tem legenda.' })}
     ${campo({ caminho: 'sensorial.modoCalmo', rotulo: 'Modo calmo', tipo: 'toggle', ajuda: 'Tira as animações e deixa as trocas instantâneas.' })}
     <div class="linha-botoes"><button class="botao-p" id="testarVoz">Ouvir a voz</button></div>
     </div>`;
@@ -1527,7 +1623,7 @@ function abaAparelho(p) {
     on('#impSim', () => { alterarConfig('Configuração importada de arquivo', c => { const nova = mesclar(configPadrao(), dados.config); Object.keys(c).forEach(k => delete c[k]); Object.assign(c, nova); }); aviso('Configuração importada'); telaAdulto('aparelho'); });
     on('#impNao', () => { $('#confirmaImport').innerHTML = ''; ev.target.value = ''; });
   });
-  on('#csvFalas', () => baixar(`ilha-do-farol-falas-${hojeChave()}.csv`, csv([['codigo', 'personagem', 'texto'], ...todasAsFalas().map(f => [f.id, NOME_FALANTE[f.quem] || f.quem, f.texto])]), 'text/csv;charset=utf-8'));
+  on('#csvFalas', () => baixar(`ilha-do-farol-falas-${hojeChave()}.csv`, csv([['codigo', 'personagem', 'texto', 'chave', 'voz_gravada'], ...todasAsFalas().map(f => [f.id, NOME_FALANTE[f.quem] || f.quem, f.texto, f.chave, !!audioDaFala(f)])]), 'text/csv;charset=utf-8'));
   on('#apagar', () => {
     $('#confirmaApagar').innerHTML = `<div class="confirmar"><label for="digApagar">Para confirmar, digite APAGAR</label><input type="text" id="digApagar" autocomplete="off"><div class="linha-botoes"><button class="botao-p perigo" id="apagarSim">Apagar agora</button></div></div>`;
     on('#apagarSim', () => {
@@ -1594,13 +1690,12 @@ function exportarHistorico() {
 }
 
 // Todas as falas possíveis, para o roteiro de gravação.
+// A lista de gravação: uma entrada por frase diferente de cada personagem (a mesma frase em dois lugares grava uma vez).
 function todasAsFalas() {
   const lista = [], vistos = new Set();
-  const add = f => { if (f && !vistos.has(f.id)) { vistos.add(f.id); lista.push(f); } };
-  for (const aq of [true, false]) for (const te of [true, false]) {
-    const et = ['comoEstou']; if (aq) et.push('aquecer'); et.push('vila'); if (te) et.push('tesouro'); et.push('tchau');
-    add(FALA.chegada(et));
-  }
+  const add = f => { if (!f) return; const k = chaveFala(f); if (!vistos.has(k)) { vistos.add(k); lista.push({ ...f, quem: f.quem || 'lume', chave: k }); } };
+  add(FALA.chegadaHoje); add(FALA.chegadaFim('tchau'));
+  for (const e of ['comoEstou', 'aquecer', 'mapa', ...Object.keys(LUGARES), 'tesouro']) add(FALA.chegadaItem(e));
   [FALA.vamos, FALA.agoraNao, FALA.comoEstou, FALA.comoAgora, ...Object.values(FALA.termo), FALA.aindaAgitado, FALA.ondaInicio, FALA.ondaSobe, FALA.ondaDesce, FALA.ondaFim,
     FALA.pausa, FALA.pausaVolta, FALA.facil, FALA.facilModelo, FALA.facilElogio, FALA.q2ModeloEu, FALA.ajInstrucao, FALA.ajModelo, FALA.ajElogio,
     FALA.ajsGigi, FALA.ajsInstrucao, FALA.ajsModelo, FALA.ajsGigiBaixo, FALA.ajsElogio, FALA.recTuca, FALA.recInstrucao, FALA.recModelo, FALA.recTudoBem, FALA.recElogio,
@@ -1612,7 +1707,7 @@ function todasAsFalas() {
   }
   for (const c of Object.keys(COISAS)) { add(FALA.q1Modelo(c)); add(FALA.q2ModeloCoisa(c)); }
   for (const cor of Object.keys(CORES_CONCHA)) add(FALA.q2ModeloCor(cor));
-  for (let n = 1; n <= 40; n++) add(FALA.tesouro(n));
+  for (let n = 0; n <= 60; n++) add(FALA.tesouro(n));
   for (const a of Object.keys(ATIVIDADES)) add(FALA.tchau(a));
   falasDosLugares().forEach(add);
   return lista;
@@ -1628,6 +1723,9 @@ async function iniciar() {
   if ('speechSynthesis' in window) { carregarVozes(); speechSynthesis.onvoiceschanged = carregarVozes; }
   await Promise.all([carregarImagens(), carregarAudios()]);
   document.addEventListener('visibilitychange', () => { if (document.hidden) pararFala(); });
+  // todo toque libera (ou religa) o som: o iPad exige um gesto antes de tocar a voz
+  document.addEventListener('pointerdown', prepararVoz, { capture: true, passive: true });
+  document.addEventListener('keydown', prepararVoz, { capture: true, passive: true });
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }

@@ -1,6 +1,6 @@
 /* Ilha do Farol: funciona sem internet depois da primeira abertura.
    Estratégia: rede primeiro (a homologação recebe a versão nova na hora); sem rede, usa a cópia guardada. */
-const CACHE = 'ilha-farol-0.3.0';
+const CACHE = 'ilha-farol-0.4.0';
 const ARQUIVOS = [
   './', './index.html', './estilo.css', './arte.js', './app.js', './lugares.js', './manifest.webmanifest',
   './icones/icone-192.png', './icones/icone-512.png', './icones/icone-180.png',
@@ -16,6 +16,11 @@ self.addEventListener('install', ev => {
       const mapa = await (await fetch('./img/arte.json', { cache: 'no-cache' })).json();
       await c.addAll(Object.values(mapa).map(f => './img/' + f));
     } catch (e) { /* sem mapa, as imagens entram no cache quando forem usadas */ }
+    // as falas gravadas também, para a voz funcionar sem internet
+    try {
+      const falas = await (await fetch('./audio/falas.json', { cache: 'no-cache' })).json();
+      await c.addAll([...new Set(Object.values(falas).map(a => './audio/' + a.f))]);
+    } catch (e) { /* sem falas, cada uma entra no cache na primeira vez que tocar */ }
     await self.skipWaiting();
   })());
 });
