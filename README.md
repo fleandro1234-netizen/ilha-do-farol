@@ -26,7 +26,7 @@ Aplicativo web instalável, sem servidor e sem conta: tudo fica no aparelho (loc
 - Fotos das Histórias Minhas ficam no IndexedDB do aparelho, nunca no localStorage.
 - `img/arte.json`: mapa das imagens definitivas (geradas por IA). Quando uma chave existe, a imagem entra no lugar do desenho provisório.
 - `audio/falas.json`: mapa das falas gravadas, `{ chave: { f, t, q, d } }`. A chave sai do texto e de quem fala (`chaveFala` em `app.js`), então frase nova ou alterada cai na voz do aparelho em vez de tocar um áudio errado. Os MP3 ficam em `audio/v/`.
-- Voz: Aninha (biblioteca do ElevenLabs, `eleven_multilingual_v2`), uma voz só para todas as falas. A lista completa sai na área do adulto, aba Aparelho, com a coluna de gravada ou não.
+- Voz: uma só para todas as falas, criada no ElevenLabs a partir da voz de uma pessoa real, com autorização dela (clone instantâneo, modelo `eleven_multilingual_v2`). A lista completa sai na área do adulto, aba Aparelho, com a coluna de gravada ou não.
 - Para regravar depois de mudar um texto: `node extrair_falas.js`, `python gravar_eleven.py tudo` e `python gravar_eleven.py publicar` (scripts em `vozes/`; a chave da API fica fora do repositório).
 - Ao mudar arquivos do jogo, subir a versão em `VERSAO` (`app.js`) e em `CACHE` (`sw.js`).
 - Teste local: `python -m http.server 8830 --directory docs` e abrir `http://localhost:8830/jogo/`.

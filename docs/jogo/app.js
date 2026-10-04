@@ -2,7 +2,7 @@
 /* Ilha do Farol: protótipo de homologação, lugar Vila Conversa.
    Roda inteiro no aparelho: sem servidor, sem conta e, depois da primeira abertura, sem internet. */
 
-const VERSAO = '0.4.1';
+const VERSAO = '0.4.2';
 const CHAVE = 'ilhaFarol.v1';
 const TETO_DIARIO_MIN = 30;
 const ANEIS = 5;
@@ -1348,7 +1348,7 @@ function abaTestar(p) {
       <li>Na aba <b>Aparelho</b>, crie um PIN dos pais e entre com ele para ver o que os pais enxergam.</li>
     </ol></div>
     <div class="bloco"><h3>O que ainda é provisório</h3>
-      <p>A arte desta versão já é a definitiva desta fase, criada com IA em alta definição. Todas as falas do jogo são gravadas, com uma voz só, suave e calma (Aninha, da biblioteca do ElevenLabs), e sempre com legenda. As Histórias Minhas, que o adulto escreve, usam a voz do próprio aparelho. Os dados e as fotos das Histórias Minhas ficam só neste aparelho.</p>
+      <p>A arte desta versão já é a definitiva desta fase, criada com IA em alta definição. Todas as falas do jogo são gravadas com uma voz só (criada no ElevenLabs a partir da voz de uma pessoa real, com autorização dela) e sempre com legenda. As Histórias Minhas, que o adulto escreve, usam a voz do próprio aparelho. Os dados e as fotos das Histórias Minhas ficam só neste aparelho.</p>
       <p>Anote o que mudaria e envie para quem mandou o link. O roteiro completo está em <a href="../">Ilha do Farol, roteiro</a>.</p></div>`;
 }
 

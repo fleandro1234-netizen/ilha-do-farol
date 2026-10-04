@@ -60,8 +60,10 @@ def modelo_whisper():
     return _modelo
 
 
-def palavras_ouvidas(caminho, dica=None):
-    segs, _ = modelo_whisper().transcribe(str(caminho), language="pt", word_timestamps=True, beam_size=5,
+def palavras_ouvidas(caminho, dica=None, feixe=5):
+    """Palavras ouvidas com o tempo de cada uma. `caminho` pode ser um arquivo ou as amostras já em 16 kHz."""
+    fonte = caminho if isinstance(caminho, np.ndarray) else str(caminho)
+    segs, _ = modelo_whisper().transcribe(fonte, language="pt", word_timestamps=True, beam_size=feixe,
                                           condition_on_previous_text=False, initial_prompt=dica)
     saida = []
     for s in segs:
